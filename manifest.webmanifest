@@ -1,0 +1,21 @@
+{
+  "name": "Drone Assistant",
+  "short_name": "Drone Assist",
+  "description": "Mobiele webapp voor dronebeelden, AR, inspecties en terreinkartering.",
+  "id": "/drone-assistant/",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#06131b",
+  "theme_color": "#081a24",
+  "lang": "nl-BE",
+  "icons": [
+    {
+      "src": "./assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
