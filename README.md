@@ -1,75 +1,84 @@
-# Drone Assistant v0.3.1
+# Drone Assistant v0.4.0
 
-Mobiele GitHub Pages-PWA voor toekomstige analyse van dronebeelden, Ground AR, inspecties en terreinkartering. De app bestuurt de drone niet.
+Mobiele GitHub Pages-PWA voor de VISUO XS809HW. Deze versie onderzoekt veilig of de camerastream rechtstreeks in Android Chrome bereikbaar is. De app bestuurt de drone niet.
 
 ## Vaste links
 
 - Repository: https://github.com/gasvdv-lab/drone-assistant
 - App: https://gasvdv-lab.github.io/drone-assistant/
 
-## Nieuwe hardwarebaseline
+## Wat betekent offlinecache?
 
-De aangeleverde foto's, batterijvorm en werkende XSW UFO-app wijzen met hoge waarschijnlijkheid op:
+De serviceworker bewaart de app-shell lokaal op de telefoon. Nadat Drone Assistant eenmaal via GitHub Pages is geladen, kan de interface opnieuw openen wanneer de telefoon verbonden is met het wifi-netwerk van de drone, ook al levert dat netwerk geen internet.
 
-- **model:** VISUO/TIANQU XS809HW;
-- **camera:** één eenvoudige wifi-FPV-camera;
-- **opslag:** foto en video via XSW UFO op de telefoon;
-- **niet aanwezig:** GPS, tweede camera en optical flow;
-- **nog onbevestigd:** de exacte cameraresolutie.
+De cache bewaart de appcode, niet automatisch de camerastream. Een nieuwe versie wordt pas opgehaald wanneer opnieuw internet beschikbaar is.
 
-Daarom gebruikt de app niet langer de XS816 Battle Sharks als primaire kandidaat. XS809W blijft alleen als nabijgelegen alternatieve variant beschikbaar.
+## Waar staat het gateway-IP op Samsung?
 
-## Wat werkt in v0.3.1?
+1. Zet de drone aan, maar laat de motoren uit.
+2. Open **Instellingen → Verbindingen → Wi‑Fi**.
+3. Verbind met het drone-wifinetwerk, bijvoorbeeld `WiFi UFO` of `WiFi 720P`.
+4. Tik op het tandwiel naast het verbonden netwerk.
+5. Kies zo nodig **Meer weergeven** of **IP-instellingen**.
+6. Neem het adres bij **Gateway** over in Drone Assistant.
 
-- alle functies van v0.3.0;
-- zichtbaar hardwareprofiel voor de XS809HW;
-- knop **Gebruik dit herkende profiel**;
-- vooraf ingevuld model, merk, XSW UFO, één camera en opslag op telefoon;
-- duidelijke vermelding van ontbrekende GPS, tweede camera en optical flow;
-- XS809HW en XS809W als primaire kandidaten;
-- bestaande projecten en droneprofielen blijven behouden;
-- mobiele navigatie, offline app-shell en diagnostiek;
-- projecten lokaal maken, openen, wijzigen, dupliceren en verwijderen;
-- droneprofielen en maximaal drie lokale bewijsfoto's beheren;
-- zekerheidsscore, compatibiliteitsmatrix en projectkoppeling.
+De app start met `192.168.0.1` als veilige hypothese. De browser kan het echte gateway-IP niet automatisch uitlezen.
 
-## Bewuste grenzen
+## Nieuw in v0.4.0
 
-Deze versie opent de camera niet rechtstreeks, vraagt geen locatie en maakt geen verbinding met de drone. De app verstuurt geen vlucht-, motor- of protocolcommando's. Bewijsfoto's worden alleen verwerkt nadat de gebruiker ze via de bestandskiezer selecteert. Browsergegevens wissen verwijdert lokale projecten, profielen en foto's.
+- afzonderlijke module **Live**;
+- uitleg over drone-wifi, offlinecache en gateway-IP;
+- invoer van een lokaal gateway- of camera-IP;
+- alleen privé-IP-adressen toegestaan;
+- handmatige HTTP-bereikbaarheidstest met time-out;
+- lokale-netwerktoegang aanvragen via Chrome wanneer beschikbaar;
+- afzonderlijk proberen van zes gangbare browser-videopaden;
+- handmatig aanpasbare lokale stream-URL;
+- beeldvenster met stopknop;
+- lokaal diagnoselogboek en kopieerfunctie;
+- laatst gebruikte IP-adres en log lokaal bewaren;
+- geen automatische netwerkscan;
+- geen UDP-, motor- of vluchtcommando’s.
 
-## Ieder bestand uitgelegd
+## Veilig testen
+
+Open eerst Drone Assistant terwijl internet beschikbaar is. Verbind daarna met de wifi van de ingeschakelde drone. Open **Live**, vul het gateway-IP in en kies **Test lokaal camera-adres**. Probeer vervolgens één videopatroon per keer.
+
+Een mislukt HTTP-resultaat bewijst niet dat de camera defect is. Het kan betekenen dat de camera alleen een eigen UDP-stream gebruikt, die een gewone webpagina niet rechtstreeks kan openen.
+
+## Bestanden
 
 | Bestand/map | Functie |
 |---|---|
-| `index.html` | Volledige schermstructuur en teksten van de app. |
-| `css/app.css` | Mobiele vormgeving en responsieve layout. |
-| `js/app.js` | Navigatie, formulieren, hardwarepreset, diagnostiek en gebruikersinteractie. |
-| `js/project-state.js` | Veilige lokale projectopslag, herstelkopie en projectmigratie. |
-| `js/drone-profile-state.js` | Droneprofielen, kandidaatmodellen, identificatiescore en lokale opslag. |
-| `service-worker.js` | Bewaart de app-shell voor offline openen en verwijdert oude caches na een upgrade. |
-| `manifest.webmanifest` | PWA-naam, kleur, pictogram en startinstellingen. |
+| `index.html` | Schermen, Live-module en uitleg. |
+| `css/app.css` | Mobiele vormgeving en videovenster. |
+| `js/app.js` | Navigatie, projecten, profielen en veilige livevideodiagnose. |
+| `js/project-state.js` | Lokale projectopslag en herstelkopie. |
+| `js/drone-profile-state.js` | Droneprofielen en identificatie. |
+| `service-worker.js` | Offlinecache en versie-update. |
+| `manifest.webmanifest` | PWA-instellingen. |
 | `assets/icon.svg` | App-pictogram. |
-| `ROADMAP.md` | Cumulatieve productroadmap en actuele status. |
-| `CHANGELOG.md` | Cumulatieve wijzigingen per versie. |
-| `TESTREPORT-v0.3.1.md` | Resultaten van de automatisch uitgevoerde controles. |
-| `PRAKTIJKTEST-v0.3.1.md` | Stappen om de upgrade op Android Chrome te testen. |
-| oudere testdocumenten | Historiek van eerdere versies. |
+| `ROADMAP.md` | Cumulatieve roadmap. |
+| `CHANGELOG.md` | Cumulatieve wijzigingen. |
+
+Afzonderlijke praktijktest- en testrapportbestanden worden vanaf deze versie niet meer meegeleverd. Automatische tests blijven vóór iedere oplevering uitgevoerd; het resultaat wordt hier en in de chat vermeld.
 
 ## Uploaden naar GitHub
 
-1. Pak `Drone-Assistant-v0.3.1.zip` uit.
+1. Pak `Drone-Assistant-v0.4.0.zip` uit.
 2. Open https://github.com/gasvdv-lab/drone-assistant.
 3. Kies **Add file → Upload files**.
-4. Upload de volledige uitgepakte inhoud; `index.html` moet rechtstreeks in de hoofdmap staan.
-5. Kies **Commit changes** met bericht `Upgrade Drone Assistant naar v0.3.1`.
-6. Wacht op GitHub Pages en open daarna de vaste app-link.
+4. Upload de volledige inhoud rechtstreeks naar de hoofdmap.
+5. Commit met bericht `Upgrade Drone Assistant naar v0.4.0`.
+6. Wacht op GitHub Pages en open de vaste app-link eenmaal met internet.
 
-Er is geen package-installatie, npm-opdracht of buildstap nodig.
+Geen package-installatie, npm-opdracht of buildstap is nodig.
 
-## Testresultaat
+## Automatische teststatus
 
-Voor deze oplevering zijn **60/60 automatische controles geslaagd** en zijn **8/8 productieonderdelen aanwezig**. Zie `TESTREPORT-v0.3.1.md`.
-
-## Praktijktest
-
-Volg `PRAKTIJKTEST-v0.3.1.md`. v0.2.0 blijft de stabiele baseline totdat de identificatie-upgrade op de vaste GitHub Pages-link is goedgekeurd.
+- **88/88 automatische controles geslaagd**
+- **9/9 productieonderdelen aanwezig**
+- syntaxis van de Live-module en hulplogica geldig
+- privé-IP- en lokale-URL-validatie inhoudelijk getest
+- project- en droneprofielregressies geslaagd
+- geen camera-, locatie-, WebSocket- of vluchtbesturingscode toegevoegd

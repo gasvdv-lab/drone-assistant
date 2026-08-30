@@ -1,7 +1,7 @@
 # Drone Assistant — Master Roadmap
 
 **Documentstatus:** vastgesteld startplan  
-**Huidige projectstatus:** v0.3.1 XS809HW-hardwareprofiel gebouwd — automatische en praktische tests worden per release vastgelegd; v0.2.0 blijft de stabiele baseline tot gebruikersgoedkeuring  
+**Huidige projectstatus:** v0.4.0 Live Video Feasibility gebouwd en automatisch getest; echte drone-wifitest is de volgende stap  
 **Eerste doelplatform:** beheerde Android-telefoon, Chrome, zonder APK  
 **Distributie en testworkflow:** GitHub-repository met mobiele PWA via een vaste GitHub Pages-link  
 **Vaste repository:** `https://github.com/gasvdv-lab/drone-assistant`  
@@ -125,10 +125,9 @@ Bij iedere upgrade worden bijgewerkt:
 - `README.md`;
 - `ROADMAP.md`;
 - `CHANGELOG.md`;
-- een versiegebonden testrapport in `tests/reports/`;
 - de vaste GitHub Pages-link zodra die bestaat.
 
-`ROADMAP.md` wordt niet als afzonderlijke gebruikersdownload aangeboden. Iedere versie wordt door de ontwikkelaar als één volledige ZIP aangeleverd. De gebruiker downloadt deze ZIP en uploadt de inhoud naar GitHub. GitHub blijft daarna de centrale versie- en testomgeving. Het actuele cumulatieve bestand blijft samen met `README.md`, `CHANGELOG.md`, de appcode en de testdocumentatie in zowel de versie-ZIP als de repository staan.
+Afzonderlijke praktijktest- en testrapportbestanden worden vanaf v0.4.0 niet meer meegeleverd. Automatische tests blijven verplicht en hun resultaat wordt kort in `README.md` en in de chat vermeld. `ROADMAP.md` blijft cumulatief in iedere volledige versie-ZIP aanwezig.
 
 ### 5.4 Privacy en gegevensbescherming
 
@@ -156,35 +155,32 @@ Een versie is pas volledig afgerond wanneer:
 
 1. de nieuwe functie werkt;
 2. alle automatische tests opnieuw zijn uitgevoerd;
-3. het testrapport is opgeslagen;
-4. bekende beperkingen zijn gedocumenteerd;
-5. `README.md`, `ROADMAP.md` en `CHANGELOG.md` zijn bijgewerkt;
-6. openstaande praktijktests duidelijk zijn vermeld;
-7. de gebruiker de relevante praktijktest heeft goedgekeurd.
+3. bekende beperkingen zijn gedocumenteerd;
+4. `README.md`, `ROADMAP.md` en `CHANGELOG.md` zijn bijgewerkt;
+5. noodzakelijke toesteltests zijn in de chat uitgelegd;
+6. de gebruiker de relevante werking heeft goedgekeurd.
 
 Elke opgeleverde versie-ZIP bevat minstens:
 
 - de complete appcode;
 - `README.md`;
 - de actuele cumulatieve `ROADMAP.md`;
-- `CHANGELOG.md`;
-- het testrapport van de versie;
-- benodigde testinstructies en testbestanden die veilig kunnen worden meegeleverd.
+- `CHANGELOG.md`.
 
-De ZIP volgt dezelfde overzichtelijke basisstructuur als Measure AR: `index.html`, de hoofd-documentatie, het versiegebonden testrapport en de praktijktest staan rechtstreeks in de ZIP-root; opmaak staat in `css/`, JavaScript in `js/` en visuele bestanden in `assets/`. Er wordt geen `tests/`-map en geen overbodige extra bovenliggende map in de ZIP geplaatst, zodat de uitgepakte inhoud rechtstreeks naar de GitHub-root kan worden geüpload. De gebruikers-ZIP is geen npm- of Node-package en bevat geen verplichte buildstap: GitHub Pages moet de statische app rechtstreeks kunnen publiceren.
+De ZIP bevat `index.html` en de hoofddocumentatie rechtstreeks in de root; opmaak staat in `css/`, JavaScript in `js/` en visuele bestanden in `assets/`. Er staat geen `tests/`-map, testrapport, praktijktestbestand of extra bovenliggende map in. De gebruikers-ZIP is geen npm- of Node-package en bevat geen verplichte buildstap.
 
 De primaire versieflow is:
 
 1. code en documentatie bijwerken;
 2. alle lokaal automatiseerbare tests uitvoeren;
-3. `README.md`, `ROADMAP.md`, `CHANGELOG.md` en het testrapport bijwerken;
+3. `README.md`, `ROADMAP.md` en `CHANGELOG.md` bijwerken;
 4. de complete, geteste versie verpakken als ZIP, bijvoorbeeld `Drone-Assistant-v0.1.0.zip`;
 5. de ZIP aan de gebruiker bezorgen;
 6. de gebruiker downloadt de ZIP en uploadt de uitgepakte inhoud naar de GitHub-repository;
 7. GitHub Actions voert waar voorzien opnieuw build- en regressietests uit;
 8. GitHub Pages publiceert de bron via dezelfde vaste link;
 9. de gebruiker test de vaste Pages-link op de beheerde werktelefoon;
-10. praktijktestresultaten worden gedocumenteerd;
+10. de gebruiker koppelt het praktische resultaat terug in de chat;
 11. de versie wordt na goedkeuring als stabiele baseline gemarkeerd en kan in GitHub worden getagd, bijvoorbeeld `v0.1.0`.
 
 De ZIP dient uitsluitend voor overdracht en upload naar GitHub. De app wordt op de werktelefoon niet vanuit de ZIP geïnstalleerd of geopend; gebruik en praktijktesten verlopen via GitHub Pages.
@@ -370,42 +366,50 @@ De app toont nergens meer de XS816 Battle Sharks als primaire testdrone en maakt
 
 ---
 
-### Versie 0.4.0 — Media-import, galerij, back-up en export
+### Versie 0.4.0 — Live Video Feasibility
 
-**Doel:** opnames veilig in projecten opnemen zonder directe droneverbinding nodig te hebben.
+**Doel:** veilig vaststellen of de camerastream van de VISUO rechtstreeks in Android Chrome bereikbaar is.
 
 #### Functies
 
-- foto's en video's selecteren;
-- media aan project en sessie koppelen;
-- miniaturen en galerij;
-- datum, resolutie, bestandstype en beschikbare metadata tonen;
-- labels en notities toevoegen;
-- dubbele bestanden signaleren;
-- volledig project exporteren;
-- project opnieuw importeren;
-- afzonderlijke media en resultaten exporteren;
-- opslaggebruik tonen.
+- uitleg over offlinecache, drone-wifi en gateway-IP;
+- handmatige invoer van gateway- of camera-IP;
+- uitsluitend privé-IP-adressen toelaten;
+- een begrensde HTTP-bereikbaarheidstest uitvoeren;
+- lokale-netwerktoegang via Chrome gebruiken wanneer beschikbaar;
+- browsercompatibele HTTP/MJPEG-paden één voor één proberen;
+- videopoging onmiddellijk kunnen stoppen;
+- resultaten lokaal loggen en kopiëren;
+- geen automatische netwerkscan;
+- geen UDP-, motor- of vluchtcommando's.
 
 #### Automatische tests
 
-- ondersteunde en ongeldige bestanden;
-- metadata-extractie;
-- dubbele detectie;
-- projectexport en roundtrip-import;
-- ontbrekende of beschadigde media;
-- opslaglimietfouten.
+- versie- en serviceworkercache;
+- aanwezigheid Live-module;
+- validatie van privé-IP en lokale URL;
+- time-out en foutafhandeling;
+- afwezigheid van camera-, locatie-, WebSocket- en vluchtbesturingscode;
+- regressie van projecten en droneprofielen.
 
-#### Praktijktests
+#### Mogelijke uitkomsten
 
-- import uit de officiële drone-app;
-- import van grote bestanden;
-- download/delen op Android;
-- herstel nadat Chrome is gesloten.
+- browsercompatibele stream gevonden: v0.4.1 bouwt de volwaardige livevideospeler;
+- alleen eigen UDP-stream gevonden: directe weergave via GitHub Pages is niet mogelijk;
+- lokaal verkeer door toestelbeleid geblokkeerd: beperking documenteren;
+- onbekend protocol: gericht vervolgonderzoek zonder besturingspakketten.
 
 #### Exitcriterium
 
-Een echt VISUO-opnamepakket kan betrouwbaar worden geïmporteerd, bewaard, geëxporteerd en heropend.
+We weten aantoonbaar of rechtstreeks livebeeld in deze GitHub Pages-webapp haalbaar is en via welk lokaal adres/protocol.
+
+### Voorwaardelijke versie 0.4.1 — Livevideospeler
+
+Alleen bouwen wanneer v0.4.0 een browsercompatibele stream vindt. Voorziet livebeeld, volledig scherm, stop/herverbinden, vertragingstatus en later lokale opname. Als v0.4.0 aantoont dat alleen rauwe UDP beschikbaar is, vervalt deze versie.
+
+### Latere module — Media-import, galerij, back-up en export
+
+De eerder voor v0.4.0 geplande media-import blijft volledig in de roadmap, maar is uitgesteld totdat het livevideo-onderzoek afgerond is.
 
 ---
 
@@ -892,27 +896,13 @@ Vluchtbesturing blijft ook na 1.0 buiten scope totdat daar een afzonderlijke, ex
 └── public/
 ```
 
-## 10. Vast sjabloon voor elk testrapport
+## 10. Testresultaten vanaf v0.4.0
 
-```markdown
-# Testrapport vX.Y.Z
-
-## Nieuwe functionaliteit
-## Testomgeving
-## Automatische tests
-## Resultaten
-## Mislukte tests en oplossing
-## Automatisch niet-testbare onderdelen
-## Openstaande praktijktests
-## Bekende beperkingen
-## Regressiecontrole
-## Documentatie bijgewerkt
-## Acceptatiestatus
-```
+Automatische regressietests blijven intern uitgevoerd. Alleen het samengevatte resultaat komt in `README.md` en in de chat; er worden geen afzonderlijke test- of praktijktestbestanden meer aan de ZIP toegevoegd.
 
 ## 11. Eerstvolgende concrete stap
 
-De eerstvolgende stap na v0.3.1 is de cumulatieve Android-praktijktest en bevestiging van de camera-uitvoer uit XSW UFO.
+De eerstvolgende stap is v0.4.0 via GitHub Pages publiceren, met de drone-wifi verbinden en het gateway-/camera-adres alleen-lezen onderzoeken.
 
 Voor Fase 0 verzamelen we eerst:
 
@@ -953,5 +943,9 @@ Voor Fase 0 verzamelen we eerst:
 - [x] Versie 0.3.0 — opgevolgd door correctierelease v0.3.1 vóór afzonderlijke goedkeuring
 - [x] Versie 0.3.1 — XS809HW-hardwareprofiel en preset bouwen
 - [x] Versie 0.3.1 — automatische regressie- en hardwareprofieltests uitvoeren (60/60 controles en 8/8 buildonderdelen geslaagd)
-- [ ] Versie 0.3.1 — cumulatieve praktijktest op Android Chrome
-- [ ] Versie 0.3.1 — als stabiele baseline goedkeuren
+- [x] Livevideo als eerstvolgende productprioriteit vastgesteld
+- [x] Afzonderlijke praktijktest- en testrapportbestanden vanaf v0.4.0 geschrapt
+- [x] Versie 0.4.0 — veilige Live Video Feasibility-module bouwen
+- [x] Versie 0.4.0 — automatische regressietests uitvoeren (88/88 controles en 9/9 productieonderdelen geslaagd)
+- [ ] Versie 0.4.0 — via GitHub Pages met de echte drone-wifi testen
+- [ ] Versie 0.4.0 — beslissen of v0.4.1 livevideospeler haalbaar is

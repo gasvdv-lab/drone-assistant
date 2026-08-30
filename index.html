@@ -27,9 +27,9 @@
         <section id="view-home" class="view active" data-view="home">
           <article class="hero-panel">
             <div class="hero-copy">
-            <p class="section-label">HARDWAREPROFIEL · v0.3.1</p>
-              <h2>Jouw VISUO is nu herkenbaar vastgelegd.</h2>
-              <p>De foto’s en batterij wijzen op een VISUO XS809HW met één eenvoudige wifi-FPV-camera en XSW UFO.</p>
+            <p class="section-label">LIVEVIDEO-ONDERZOEK · v0.4.0</p>
+              <h2>Onderzoek de camerastream veilig.</h2>
+              <p>Verbind met het wifi-netwerk van de VISUO en test alleen-lezen videopaden zonder vlucht- of motorcommando’s.</p>
             </div>
             <div class="radar" aria-hidden="true">
               <span class="radar-sweep"></span>
@@ -55,7 +55,7 @@
           <section class="section-block">
             <div class="section-heading">
             <div><p class="section-label">ACTIEF PROJECT</p><h2 id="activeProjectName">Nog geen project</h2></div>
-              <span class="version-tag">v0.3.1</span>
+              <span class="version-tag">v0.4.0</span>
             </div>
             <div class="progress-track" aria-label="Voortgang identificatiebasis"><span style="width: 31%"></span></div>
             <p id="activeProjectMeta" class="muted">Open Projecten om je eerste project te maken.</p>
@@ -99,6 +99,63 @@
           <div id="droneList" class="project-list" aria-live="polite"></div>
         </section>
 
+        <section id="view-live" class="view" data-view="live" hidden>
+          <div class="page-intro">
+            <p class="section-label">ALLEEN-LEZEN DIAGNOSE</p>
+            <h2>Livevideo onderzoeken</h2>
+            <p>Deze module test uitsluitend een door jou gekozen lokaal adres. Ze scant het netwerk niet en verzendt geen vluchtcommando’s.</p>
+          </div>
+
+          <section class="section-block">
+            <div class="section-heading"><div><p class="section-label">EERST VERBINDEN</p><h2>Drone-wifi en gateway</h2></div><span class="project-badge">Stap 1</span></div>
+            <ol class="instruction-list">
+              <li>Zet de drone aan, maar laat de motoren uit.</li>
+              <li>Open Android <strong>Instellingen → Verbindingen → Wi‑Fi</strong>.</li>
+              <li>Verbind met het netwerk van de drone, bijvoorbeeld <strong>WiFi UFO</strong> of <strong>WiFi 720P</strong>.</li>
+              <li>Tik op het tandwiel van dat netwerk en zoek onder <strong>Meer weergeven</strong> naar <strong>Gateway</strong>.</li>
+              <li>Keer terug naar deze app. Dankzij de offlinecache blijft ze beschikbaar zonder internet.</li>
+            </ol>
+          </section>
+
+          <section class="section-block">
+            <div class="section-heading"><div><p class="section-label">LOKAAL ADRES</p><h2>Veilige verbindingstest</h2></div><span class="project-badge">Stap 2</span></div>
+            <label class="standalone-label">Gateway- of camera-IP
+              <input id="cameraIp" inputmode="decimal" autocomplete="off" value="192.168.0.1" placeholder="Bijvoorbeeld 192.168.0.1" />
+            </label>
+            <p class="field-help">Alleen privé-adressen zoals 192.168.x.x, 10.x.x.x of 172.16–31.x.x worden geaccepteerd.</p>
+            <button id="testCameraHost" class="primary-button" type="button">Test lokaal camera-adres</button>
+            <p id="hostTestFeedback" class="feedback left-feedback" aria-live="polite"></p>
+          </section>
+
+          <section class="section-block">
+            <div class="section-heading"><div><p class="section-label">BEELDPROEF</p><h2>Probeer een videopad</h2></div><span class="project-badge">Stap 3</span></div>
+            <label class="standalone-label">Bekend patroon
+              <select id="streamPreset">
+                <option value="/">Basisadres</option>
+                <option value="/videostream.cgi">MJPEG · /videostream.cgi</option>
+                <option value="/video">Video · /video</option>
+                <option value="/mjpeg">MJPEG · /mjpeg</option>
+                <option value="/stream">Stream · /stream</option>
+                <option value=":8080/?action=stream">MJPEG · poort 8080</option>
+              </select>
+            </label>
+            <label class="standalone-label">Volledige lokale stream-URL
+              <input id="streamUrl" inputmode="url" autocomplete="off" value="http://192.168.0.1/" />
+            </label>
+            <div class="button-row"><button id="tryStream" class="primary-button" type="button">Probeer beeld</button><button id="stopStream" class="secondary-button" type="button">Stop</button></div>
+            <div id="streamStage" class="stream-stage">
+              <img id="streamImage" alt="Mogelijk livebeeld van de drone" hidden />
+              <div id="streamPlaceholder"><span>◉</span><strong>Nog geen videobeeld</strong><small>Kies eerst Probeer beeld.</small></div>
+            </div>
+            <p id="streamFeedback" class="feedback left-feedback" aria-live="polite"></p>
+          </section>
+
+          <section class="section-block">
+            <div class="section-heading"><div><p class="section-label">RESULTAAT</p><h2>Diagnoselogboek</h2></div><button id="copyLiveLog" class="compact-button" type="button">Kopieer</button></div>
+            <div id="liveLog" class="live-log" aria-live="polite"></div>
+          </section>
+        </section>
+
         <section id="view-projects" class="view" data-view="projects" hidden>
           <div class="page-intro">
             <div class="page-intro-row">
@@ -134,7 +191,7 @@
             <p>Een mobiele PWA voor dronebeelden, AR, inspecties en terreinkartering. Gebouwd voor Android Chrome en gepubliceerd via GitHub Pages.</p>
           </div>
           <dl class="info-list">
-            <div><dt>Versie</dt><dd>0.3.1</dd></div>
+            <div><dt>Versie</dt><dd>0.4.0</dd></div>
             <div><dt>Testdrone</dt><dd>VISUO XS809HW (zeer waarschijnlijk)</dd></div>
             <div><dt>Camera</dt><dd>1 eenvoudige wifi-FPV-camera</dd></div>
             <div><dt>Niet aanwezig</dt><dd>GPS, tweede camera en optical flow</dd></div>
@@ -149,6 +206,7 @@
         <button class="nav-button active" type="button" data-target="home" aria-current="page"><span>⌂</span>Start</button>
         <button class="nav-button" type="button" data-target="projects"><span>▦</span>Projecten</button>
         <button class="nav-button" type="button" data-target="drone"><span>⌁</span>Drone</button>
+        <button class="nav-button" type="button" data-target="live"><span>▶</span>Live</button>
         <button class="nav-button" type="button" data-target="diagnostics"><span>◎</span>Diagnostiek</button>
         <button class="nav-button" type="button" data-target="about"><span>i</span>Over</button>
       </nav>

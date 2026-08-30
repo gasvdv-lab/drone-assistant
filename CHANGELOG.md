@@ -2,6 +2,33 @@
 
 Alle belangrijke wijzigingen aan Drone Assistant worden hier cumulatief bijgehouden.
 
+## [0.4.0] — 2026-08-30
+
+### Toegevoegd
+
+- Live Video Feasibility-module als nieuwe eerste prioriteit;
+- uitleg over offlinecache, drone-wifi en gateway-IP op Samsung;
+- handmatige invoer en validatie van een privé gateway-/camera-IP;
+- veilige HTTP-bereikbaarheidstest met time-out;
+- zes afzonderlijk te proberen browsercompatibele videopatronen;
+- handmatige lokale stream-URL;
+- beeldvenster, stopfunctie en lokaal diagnoselogboek;
+- kopieerbaar livevideorapport;
+- lokaal bewaren van laatste IP en diagnose.
+
+### Veiligheid
+
+- geen automatische netwerkscan;
+- geen raw-UDP-, joystick-, motor- of vluchtcommando's;
+- alleen lokale HTTP-URL's met privé-IP worden aanvaard;
+- iedere test start uitsluitend na een bewuste gebruikersactie.
+
+### Documentatie
+
+- media-import uitgesteld totdat de livevideohaalbaarheid bekend is;
+- afzonderlijke praktijktest- en testrapportbestanden geschrapt vanaf v0.4.0;
+- automatische tests blijven verplicht en worden samengevat in README en chat.
+
 ## [0.3.1] — 2026-08-30
 
 ### Gecorrigeerd

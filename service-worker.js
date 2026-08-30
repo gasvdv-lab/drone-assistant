@@ -1,4 +1,4 @@
-const CACHE_NAME = 'drone-assistant-v0.3.1';
+const CACHE_NAME = 'drone-assistant-v0.4.0';
 const APP_SHELL = [
   './',
   './index.html',
@@ -6,6 +6,7 @@ const APP_SHELL = [
   './js/app.js',
   './js/project-state.js',
   './js/drone-profile-state.js',
+  './js/live-video-utils.js',
   './manifest.webmanifest',
   './assets/icon.svg'
 ];
