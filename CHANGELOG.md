@@ -2,6 +2,28 @@
 
 Alle belangrijke wijzigingen aan Drone Assistant worden hier cumulatief bijgehouden.
 
+## [0.3.1] — 2026-08-30
+
+### Gecorrigeerd
+
+- primaire testdrone gewijzigd van de voorlopige XS816-inschatting naar **VISUO XS809HW**;
+- XS809W behouden als nabije alternatieve variant;
+- hardwareprofiel vastgelegd met één eenvoudige wifi-FPV-camera en opslag op de telefoon via XSW UFO;
+- GPS, tweede camera en optical flow expliciet als niet aanwezig gemarkeerd;
+- exacte cameraresolutie bewust onbevestigd gelaten.
+
+### Toegevoegd
+
+- zichtbaar hardwareoverzicht in de identificatiemodule;
+- knop **Gebruik dit herkende profiel** met veilige voorinvulling;
+- regressietests voor XS809HW/XS809W, camera-aantal, opslagwijze en hardwareclaims.
+
+### Behouden
+
+- bestaande lokale projecten en droneprofielen;
+- alle v0.3.0-functies;
+- geen camera-, locatie-, drone- of vluchtbesturingstoegang.
+
 ## [0.3.0] — 2026-08-30
 
 ### Toegevoegd

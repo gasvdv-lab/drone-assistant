@@ -27,9 +27,9 @@
         <section id="view-home" class="view active" data-view="home">
           <article class="hero-panel">
             <div class="hero-copy">
-            <p class="section-label">IDENTIFICATIE · v0.3.0</p>
-              <h2>Weet welke drone je werkelijk gebruikt.</h2>
-              <p>Verzamel modelgegevens en bewijs zonder aannames. De app toont een kandidaat en hoe betrouwbaar die identificatie is.</p>
+            <p class="section-label">HARDWAREPROFIEL · v0.3.1</p>
+              <h2>Jouw VISUO is nu herkenbaar vastgelegd.</h2>
+              <p>De foto’s en batterij wijzen op een VISUO XS809HW met één eenvoudige wifi-FPV-camera en XSW UFO.</p>
             </div>
             <div class="radar" aria-hidden="true">
               <span class="radar-sweep"></span>
@@ -55,7 +55,7 @@
           <section class="section-block">
             <div class="section-heading">
             <div><p class="section-label">ACTIEF PROJECT</p><h2 id="activeProjectName">Nog geen project</h2></div>
-              <span class="version-tag">v0.3.0</span>
+              <span class="version-tag">v0.3.1</span>
             </div>
             <div class="progress-track" aria-label="Voortgang identificatiebasis"><span style="width: 31%"></span></div>
             <p id="activeProjectMeta" class="muted">Open Projecten om je eerste project te maken.</p>
@@ -76,6 +76,20 @@
             </div>
             <p>Een werkende XSW UFO-app is een aanwijzing, geen modelbewijs. Voeg gegevens en maximaal drie lokale bewijsfoto’s toe.</p>
           </div>
+          <section class="section-block known-hardware" aria-labelledby="knownHardwareTitle">
+            <div class="section-heading">
+              <div><p class="section-label">HERKEND OP DE FOTO’S</p><h2 id="knownHardwareTitle">VISUO XS809HW</h2></div>
+              <span class="project-badge">Zeer waarschijnlijk</span>
+            </div>
+            <dl class="hardware-facts">
+              <div><dt>Camera</dt><dd>1 eenvoudige wifi-FPV-camera</dd></div>
+              <div><dt>App</dt><dd>XSW UFO</dd></div>
+              <div><dt>Opslag</dt><dd>Op de telefoon</dd></div>
+              <div><dt>Niet aanwezig</dt><dd>GPS, tweede camera en optical flow</dd></div>
+            </dl>
+            <p class="field-help">De exacte cameraresolutie is nog niet fysiek bevestigd. De app behandelt die daarom als een eenvoudige, beperkte camera.</p>
+            <button id="loadKnownDroneButton" class="primary-button" type="button">Gebruik dit herkende profiel</button>
+          </section>
           <div id="droneEmpty" class="empty-state">
             <span aria-hidden="true">⌁</span>
             <h3>Model nog onbekend</h3>
@@ -120,8 +134,10 @@
             <p>Een mobiele PWA voor dronebeelden, AR, inspecties en terreinkartering. Gebouwd voor Android Chrome en gepubliceerd via GitHub Pages.</p>
           </div>
           <dl class="info-list">
-            <div><dt>Versie</dt><dd>0.3.0</dd></div>
-            <div><dt>Testdrone</dt><dd>VISUO XS816 Battle Sharks (te bevestigen)</dd></div>
+            <div><dt>Versie</dt><dd>0.3.1</dd></div>
+            <div><dt>Testdrone</dt><dd>VISUO XS809HW (zeer waarschijnlijk)</dd></div>
+            <div><dt>Camera</dt><dd>1 eenvoudige wifi-FPV-camera</dd></div>
+            <div><dt>Niet aanwezig</dt><dd>GPS, tweede camera en optical flow</dd></div>
             <div><dt>Referentie-app</dt><dd>XSW UFO</dd></div>
             <div><dt>Repository</dt><dd>gasvdv-lab/drone-assistant</dd></div>
             <div><dt>Opslag</dt><dd>Projectgegevens lokaal in deze browser</dd></div>
@@ -165,8 +181,8 @@
         <input id="droneId" type="hidden" />
         <div class="form-section"><h3>1. Basisgegevens</h3>
           <label>Profielnaam<input id="droneName" maxlength="80" required value="Mijn VISUO-drone" /></label>
-          <div class="form-grid"><label>Merk<input id="droneBrand" maxlength="50" value="VISUO/TIANQU" /></label><label>Modelcode<input id="droneModelCode" maxlength="40" placeholder="Bijvoorbeeld XS816" autocapitalize="characters" /></label></div>
-          <label>Variant of opschrift<input id="droneVariant" maxlength="60" placeholder="Bijvoorbeeld Battle Sharks of XS816L" /></label>
+          <div class="form-grid"><label>Merk<input id="droneBrand" maxlength="50" value="VISUO/TIANQU" /></label><label>Modelcode<input id="droneModelCode" maxlength="40" placeholder="Bijvoorbeeld XS809HW" autocapitalize="characters" /></label></div>
+          <label>Variant of opschrift<input id="droneVariant" maxlength="60" placeholder="Bijvoorbeeld XS809HW" /></label>
         </div>
         <div class="form-section"><h3>2. App en verbinding</h3>
           <div class="form-grid"><label>Werkende app<input id="droneApp" maxlength="60" value="XSW UFO" /></label><label>Appversie<input id="droneAppVersion" maxlength="30" placeholder="Later invullen" /></label></div>

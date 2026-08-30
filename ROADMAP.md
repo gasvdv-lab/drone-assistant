@@ -1,12 +1,12 @@
 # Drone Assistant — Master Roadmap
 
 **Documentstatus:** vastgesteld startplan  
-**Huidige projectstatus:** v0.3.0 Drone-identificatie gebouwd en automatisch getest — praktische Android-test openstaand; v0.2.0 blijft de stabiele baseline  
+**Huidige projectstatus:** v0.3.1 XS809HW-hardwareprofiel gebouwd — automatische en praktische tests worden per release vastgelegd; v0.2.0 blijft de stabiele baseline tot gebruikersgoedkeuring  
 **Eerste doelplatform:** beheerde Android-telefoon, Chrome, zonder APK  
 **Distributie en testworkflow:** GitHub-repository met mobiele PWA via een vaste GitHub Pages-link  
 **Vaste repository:** `https://github.com/gasvdv-lab/drone-assistant`  
 **Beoogde vaste app-link:** `https://gasvdv-lab.github.io/drone-assistant/`  
-**Eerste testdrone:** vermoedelijk VISUO XS816 Battle Sharks (exacte variant nog te bevestigen)  
+**Eerste testdrone:** zeer waarschijnlijk VISUO XS809HW; één eenvoudige wifi-FPV-camera; exacte cameraresolutie nog te bevestigen  
 **Bevestigde werkende referentie-app:** XSW UFO  
 
 ## 1. Doel van de app
@@ -197,12 +197,13 @@ De ZIP dient uitsluitend voor overdracht en upload naar GitHub. De app wordt op 
 
 #### Te verzamelen
 
-- exacte VISUO-modelcode en variant bevestigen; voorlopig vermoedelijk `XS816 Battle Sharks`, mogelijk met suffix zoals `XS816L`;
+- modelidentificatie verder bevestigen; actuele hardwarebaseline is `VISUO XS809HW`, met `XS809W` als nabije alternatieve variant;
 - foto's van bovenkant, onderkant, camera's, sticker en batterijvak;
 - naam van het drone-wifinetwerk;
 - gebruikte referentie-app: `XSW UFO` (werking door gebruiker bevestigd); exacte appversie nog registreren;
 - wijze van opname en opslag;
-- aanwezigheid van voor- en ondercamera;
+- één eenvoudige wifi-FPV-camera bevestigd als werkhypothese; exacte cameraresolutie nog controleren;
+- afwezigheid van GPS, tweede camera en optical flow als hardwaregrens hanteren;
 - Android- en Chrome-versie;
 - beperkingen van het beheerde toestel;
 - enkele originele testfoto's en korte testvideo's.
@@ -318,7 +319,7 @@ Een project overleeft herladen en appupdates zonder gegevensverlies.
 - bewijsbronnen registreren;
 - maximaal drie lokaal verkleinde bewijsfoto's opslaan;
 - deterministische zekerheidsscore berekenen;
-- kandidaatmodellen XS816, XS816L en XS809S tonen;
+- kandidaatmodellen XS816, XS816L en XS809S tonen (historische v0.3.0-startset);
 - profiel aan een project koppelen;
 - bewezen, vermoedelijke en niet-ondersteunde mogelijkheden onderscheiden;
 - compatibiliteitsrapport tonen;
@@ -345,6 +346,27 @@ Een project overleeft herladen en appupdates zonder gegevensverlies.
 #### Exitcriterium
 
 De eerste VISUO kan correct aan een project worden gekoppeld en de app belooft geen onbewezen functies.
+
+---
+
+### Versie 0.3.1 — Gecorrigeerd XS809HW-hardwareprofiel
+
+**Doel:** de identificatiemodule corrigeren op basis van de aangeleverde drone- en batterijfoto's.
+
+#### Functies
+
+- VISUO XS809HW als primaire hardwarebaseline tonen;
+- XS809W als nabije alternatieve variant behouden;
+- één eenvoudige wifi-FPV-camera registreren;
+- opslag op de telefoon via XSW UFO registreren;
+- GPS, tweede camera en optical flow expliciet als niet aanwezig tonen;
+- exacte cameraresolutie zichtbaar onbevestigd laten;
+- met één knop een vooraf ingevuld XS809HW-profiel openen;
+- bestaande projecten en profielen ongewijzigd behouden.
+
+#### Exitcriterium
+
+De app toont nergens meer de XS816 Battle Sharks als primaire testdrone en maakt geen aanspraak op een tweede camera, GPS of optical flow.
 
 ---
 
@@ -890,17 +912,16 @@ Vluchtbesturing blijft ook na 1.0 buiten scope totdat daar een afzonderlijke, ex
 
 ## 11. Eerstvolgende concrete stap
 
-We starten met **Fase 0** en daarna **versie 0.1.0**.
+De eerstvolgende stap na v0.3.1 is de cumulatieve Android-praktijktest en bevestiging van de camera-uitvoer uit XSW UFO.
 
 Voor Fase 0 verzamelen we eerst:
 
-1. vermoedelijke modelcode `VISUO XS816 Battle Sharks` bevestigen via sticker, verpakking of handleiding en controleren of er een suffix zoals `L` bij staat;
+1. de actuele identificatie `VISUO XS809HW` waar mogelijk nog bevestigen via verpakking of handleiding;
 2. bevestigde referentie-app `XSW UFO` registreren en de exacte geïnstalleerde appversie nog noteren;
 3. naam van het drone-wifinetwerk;
 4. enkele originele foto's en een korte video uit die app;
-5. bevestiging hoe bestanden vanuit de officiële app naar Chrome/bestandsopslag kunnen worden gebracht.
-
-Daarna bouwen we versie 0.1.0: de lege stabiele PWA, testbasis, offline app-shell, GitHub Pages-publicatie en vaste documentatiestructuur.
+5. bevestigen hoe bestanden vanuit XSW UFO naar Chrome/bestandsopslag kunnen worden gebracht;
+6. de werkelijke uitvoerresolutie van een originele foto en korte video controleren.
 
 ## 12. Actuele voortgang
 
@@ -909,11 +930,14 @@ Daarna bouwen we versie 0.1.0: de lege stabiele PWA, testbasis, offline app-shel
 - [x] Automatische test- en regressieregels bepaald
 - [x] Cumulatieve documentatieregels bepaald
 - [x] Master-roadmap opgesteld
-- [x] Vermoedelijk basismodel vastgesteld: VISUO XS816 Battle Sharks
+- [x] Hardware op basis van foto's gecorrigeerd naar zeer waarschijnlijk VISUO XS809HW
+- [x] Eén eenvoudige wifi-FPV-camera als hardwarebaseline vastgelegd
+- [x] GPS, tweede camera en optical flow uitgesloten voor de actieve testdrone
 - [x] Werkende referentie-app vastgesteld: XSW UFO
 - [x] GitHub-repository aangemaakt: `gasvdv-lab/drone-assistant`
 - [ ] GitHub Pages activeren en vaste app-link verifiëren
-- [ ] Exacte XS816-variant/suffix bevestigen via sticker, verpakking of handleiding
+- [ ] XS809HW waar mogelijk nog via verpakking of handleiding bevestigen
+- [ ] Exacte cameraresolutie met een origineel XSW UFO-bestand controleren
 - [ ] Exacte geïnstalleerde versie van XSW UFO registreren
 - [ ] Fase 0 — exact hardwareprofiel verzamelen
 - [x] Versie 0.1.0 — PWA-basis bouwen
@@ -926,5 +950,8 @@ Daarna bouwen we versie 0.1.0: de lege stabiele PWA, testbasis, offline app-shel
 - [x] Versie 0.2.0 — door gebruiker goedgekeurd als stabiele baseline
 - [x] Versie 0.3.0 — drone-identificatie en profielwizard bouwen
 - [x] Versie 0.3.0 — automatische regressie- en identificatietests uitvoeren (51/51 controles en 8/8 buildonderdelen geslaagd)
-- [ ] Versie 0.3.0 — cumulatieve praktijktest op Android Chrome
-- [ ] Versie 0.3.0 — als stabiele baseline goedkeuren
+- [x] Versie 0.3.0 — opgevolgd door correctierelease v0.3.1 vóór afzonderlijke goedkeuring
+- [x] Versie 0.3.1 — XS809HW-hardwareprofiel en preset bouwen
+- [x] Versie 0.3.1 — automatische regressie- en hardwareprofieltests uitvoeren (60/60 controles en 8/8 buildonderdelen geslaagd)
+- [ ] Versie 0.3.1 — cumulatieve praktijktest op Android Chrome
+- [ ] Versie 0.3.1 — als stabiele baseline goedkeuren
