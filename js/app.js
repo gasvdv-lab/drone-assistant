@@ -1,7 +1,10 @@
 import { createProjectStore } from './project-state.js';
 import { calculateIdentification, createDroneProfileStore } from './drone-profile-state.js';
+import { createLocalStreamUrl, isPrivateIpv4, validateLocalStreamUrl } from './live-video-utils.js';
 
-const APP_VERSION = '0.3.1';
+const APP_VERSION = '0.4.0';
+const LIVE_IP_KEY = 'drone-assistant.live.camera-ip.v1';
+const LIVE_LOG_KEY = 'drone-assistant.live.log.v1';
 
 const KNOWN_DRONE_PROFILE = Object.freeze({
   name: 'Mijn VISUO XS809HW',
@@ -45,6 +48,8 @@ let deleteDroneId = null;
 let currentPhotos = [];
 let projectStore = null;
 let droneProfileStore = null;
+let streamAttemptTimer = null;
+let liveLogEntries = [];
 
 try { projectStore = createProjectStore(localStorage); }
 catch (error) { console.error('DA-DATA-000', error); }
@@ -52,6 +57,7 @@ try { droneProfileStore = createDroneProfileStore(localStorage); }
 catch (error) { console.error('DA-DRONE-000', error); }
 
 function showView(target) {
+  if (target !== 'live') stopLiveStream(false);
   views.forEach((view) => {
     const active = view.dataset.view === target;
     view.hidden = !active;
@@ -406,6 +412,128 @@ document.querySelector('#confirmDeleteDrone').addEventListener('click', () => {
   }
   deleteDroneId = null; renderDroneProfiles(); renderProjects();
 });
+
+const cameraIpInput = document.querySelector('#cameraIp');
+const streamPreset = document.querySelector('#streamPreset');
+const streamUrlInput = document.querySelector('#streamUrl');
+const hostTestFeedback = document.querySelector('#hostTestFeedback');
+const streamFeedback = document.querySelector('#streamFeedback');
+const streamImage = document.querySelector('#streamImage');
+const streamPlaceholder = document.querySelector('#streamPlaceholder');
+const liveLog = document.querySelector('#liveLog');
+
+function safeLocalGet(key, fallback = '') {
+  try { return localStorage.getItem(key) || fallback; } catch { return fallback; }
+}
+
+function safeLocalSet(key, value) {
+  try { localStorage.setItem(key, value); } catch { /* Diagnostiek blijft in deze sessie werken. */ }
+}
+
+function renderLiveLog() {
+  liveLog.replaceChildren(...liveLogEntries.map((entry) => {
+    const row = document.createElement('div');
+    row.className = `live-log-entry ${entry.level}`;
+    row.textContent = `${entry.time} · ${entry.message}`;
+    return row;
+  }));
+  if (!liveLogEntries.length) {
+    const empty = document.createElement('div'); empty.className = 'live-log-entry'; empty.textContent = 'Nog geen tests uitgevoerd.'; liveLog.append(empty);
+  }
+}
+
+function addLiveLog(message, level = 'warning') {
+  liveLogEntries.unshift({ time: new Date().toLocaleTimeString('nl-BE'), message, level });
+  liveLogEntries = liveLogEntries.slice(0, 30);
+  safeLocalSet(LIVE_LOG_KEY, JSON.stringify(liveLogEntries));
+  renderLiveLog();
+}
+
+function normalizedCameraIp() {
+  const value = cameraIpInput.value.trim();
+  if (!isPrivateIpv4(value)) throw new Error('Gebruik een geldig privé-IP-adres, bijvoorbeeld 192.168.0.1.');
+  return value;
+}
+
+function buildPresetUrl() {
+  return createLocalStreamUrl(normalizedCameraIp(), streamPreset.value);
+}
+
+function updateStreamUrlFromPreset() {
+  try { streamUrlInput.value = buildPresetUrl(); hostTestFeedback.textContent = ''; }
+  catch (error) { hostTestFeedback.textContent = error.message; }
+}
+
+cameraIpInput.value = safeLocalGet(LIVE_IP_KEY, '192.168.0.1');
+streamUrlInput.value = `http://${cameraIpInput.value}/`;
+cameraIpInput.addEventListener('input', updateStreamUrlFromPreset);
+streamPreset.addEventListener('change', updateStreamUrlFromPreset);
+
+document.querySelector('#testCameraHost').addEventListener('click', async () => {
+  hostTestFeedback.textContent = 'Lokaal adres testen… Chrome kan om lokale-netwerktoegang vragen.';
+  let ip;
+  try { ip = normalizedCameraIp(); }
+  catch (error) { hostTestFeedback.textContent = error.message; addLiveLog(error.message, 'error'); return; }
+  safeLocalSet(LIVE_IP_KEY, ip);
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 5000);
+  try {
+    await fetch(`http://${ip}/`, { mode: 'no-cors', cache: 'no-store', signal: controller.signal, targetAddressSpace: 'local' });
+    hostTestFeedback.textContent = 'Het lokale HTTP-adres antwoordde. Dit bewijst nog niet dat het een videostream is.';
+    addLiveLog(`HTTP-antwoord ontvangen van ${ip}.`, 'success');
+  } catch (error) {
+    const reason = error.name === 'AbortError' ? 'time-out na 5 seconden' : 'geblokkeerd of geen HTTP-antwoord';
+    hostTestFeedback.textContent = `Geen leesbaar HTTP-antwoord: ${reason}. Dit kan ook betekenen dat de camera alleen UDP gebruikt.`;
+    addLiveLog(`Geen HTTP-antwoord van ${ip}: ${reason}.`, 'error');
+  } finally { clearTimeout(timeout); }
+});
+
+function stopLiveStream(writeLog = true) {
+  clearTimeout(streamAttemptTimer); streamAttemptTimer = null;
+  if (streamImage) { streamImage.onload = null; streamImage.onerror = null; streamImage.removeAttribute('src'); streamImage.hidden = true; }
+  if (streamPlaceholder) streamPlaceholder.hidden = false;
+  if (writeLog && streamFeedback) { streamFeedback.textContent = 'Beeldproef gestopt.'; addLiveLog('Beeldproef handmatig gestopt.'); }
+}
+
+document.querySelector('#tryStream').addEventListener('click', () => {
+  stopLiveStream(false);
+  let url;
+  try { url = validateLocalStreamUrl(streamUrlInput.value.trim()); }
+  catch (error) { streamFeedback.textContent = error.message; addLiveLog(error.message, 'error'); return; }
+  const parsed = new URL(url); cameraIpInput.value = parsed.hostname; safeLocalSet(LIVE_IP_KEY, parsed.hostname);
+  streamFeedback.textContent = 'Beeld wordt geprobeerd… Geef Chrome lokale-netwerktoegang wanneer daarom wordt gevraagd.';
+  streamPlaceholder.hidden = true; streamImage.hidden = false;
+  streamImage.onload = () => {
+    clearTimeout(streamAttemptTimer);
+    streamFeedback.textContent = 'Beeldbron geladen. Controleer of het beeld werkelijk live verandert.';
+    addLiveLog(`Beeldbron geladen: ${url}`, 'success');
+  };
+  streamImage.onerror = () => {
+    clearTimeout(streamAttemptTimer); streamImage.hidden = true; streamPlaceholder.hidden = false;
+    streamFeedback.textContent = 'Geen browsercompatibel beeld op dit pad. Probeer één ander patroon.';
+    addLiveLog(`Geen beeld op ${url}`, 'error');
+  };
+  streamImage.src = `${url}${url.includes('?') ? '&' : '?'}da_cache=${Date.now()}`;
+  streamAttemptTimer = setTimeout(() => {
+    if (!streamImage.complete) {
+      streamFeedback.textContent = 'De beeldproef blijft wachten. Stop en probeer een ander pad; mogelijk gebruikt de drone UDP.';
+      addLiveLog(`Time-out tijdens beeldproef: ${url}`, 'warning');
+    }
+  }, 8000);
+});
+
+document.querySelector('#stopStream').addEventListener('click', () => stopLiveStream(true));
+document.querySelector('#copyLiveLog').addEventListener('click', async () => {
+  const report = [`Drone Assistant livevideo v${APP_VERSION}`, `IP: ${cameraIpInput.value}`, `Stream: ${streamUrlInput.value}`, ...liveLogEntries.map((entry) => `${entry.time} ${entry.message}`)].join('\n');
+  try { await navigator.clipboard.writeText(report); addLiveLog('Diagnoselogboek gekopieerd.', 'success'); }
+  catch { addLiveLog('Kopiëren werd door de browser geweigerd.', 'error'); }
+});
+
+try {
+  const storedLog = JSON.parse(safeLocalGet(LIVE_LOG_KEY, '[]'));
+  liveLogEntries = Array.isArray(storedLog) ? storedLog.slice(0, 30) : [];
+} catch { liveLogEntries = []; }
+renderLiveLog();
 
 window.addEventListener('error', (event) => console.error('DA-APP-001', event.error || event.message));
 window.addEventListener('unhandledrejection', (event) => console.error('DA-APP-002', event.reason));
