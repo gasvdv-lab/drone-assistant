@@ -1,7 +1,7 @@
 # Drone Assistant — Master Roadmap
 
 **Documentstatus:** vastgesteld startplan  
-**Huidige projectstatus:** v0.2.0 gebouwd en automatisch getest — cumulatieve praktijktest op Android Chrome openstaand  
+**Huidige projectstatus:** v0.3.0 Drone-identificatie gebouwd en automatisch getest — praktische Android-test openstaand; v0.2.0 blijft de stabiele baseline  
 **Eerste doelplatform:** beheerde Android-telefoon, Chrome, zonder APK  
 **Distributie en testworkflow:** GitHub-repository met mobiele PWA via een vaste GitHub Pages-link  
 **Vaste repository:** `https://github.com/gasvdv-lab/drone-assistant`  
@@ -305,19 +305,24 @@ Een project overleeft herladen en appupdates zonder gegevensverlies.
 
 ---
 
-### Versie 0.3.0 — Droneprofielen en compatibiliteitsmatrix
+### Versie 0.3.0 — Drone-identificatie en profielwizard
 
 **Doel:** drones identificeren zonder ze te bedienen.
 
 #### Functies
 
-- VISUO handmatig selecteren;
-- kenmerken, alternatieve modelnamen en officiële app opslaan;
+- profiel handmatig maken, wijzigen, dupliceren en verwijderen;
+- kenmerken, alternatieve modelnamen en referentie-app opslaan;
 - wifi-naam handmatig registreren;
 - camera- en opslagkenmerken vastleggen;
+- bewijsbronnen registreren;
+- maximaal drie lokaal verkleinde bewijsfoto's opslaan;
+- deterministische zekerheidsscore berekenen;
+- kandidaatmodellen XS816, XS816L en XS809S tonen;
+- profiel aan een project koppelen;
 - bewezen, vermoedelijke en niet-ondersteunde mogelijkheden onderscheiden;
 - compatibiliteitsrapport tonen;
-- later foto-, OCR- en barcodeherkenning voorbereiden.
+- later OCR-, barcode- en automatische visuele herkenning voorbereiden.
 
 #### Compatibiliteitsstatus per functie
 
@@ -329,10 +334,12 @@ Een project overleeft herladen en appupdates zonder gegevensverlies.
 
 #### Automatische tests
 
-- validatie van droneprofielen;
-- zoeken en filteren;
+- validatie, opslag, herstel, wijzigen en dupliceren van droneprofielen;
 - alternatieve modelnamen;
-- compatibiliteitsberekening;
+- identificatie- en zekerheidsscores;
+- compatibiliteitsstatussen;
+- migratie van bestaande v0.2-projecten;
+- projectkoppeling en ontkoppeling;
 - ontbreken van vluchtbesturingsfuncties.
 
 #### Exitcriterium
@@ -911,9 +918,13 @@ Daarna bouwen we versie 0.1.0: de lege stabiele PWA, testbasis, offline app-shel
 - [ ] Fase 0 — exact hardwareprofiel verzamelen
 - [x] Versie 0.1.0 — PWA-basis bouwen
 - [x] Versie 0.1.0 — automatische tests uitvoeren (15/15 controles en 6/6 buildonderdelen geslaagd)
-- [ ] Versie 0.1.0 — praktijktest op Android Chrome
-- [ ] Versie 0.1.0 — als stabiele baseline goedkeuren
+- [x] Versie 0.1.0 — regressiefuncties bevestigd tijdens cumulatieve praktijktest v0.2.0
+- [x] Versie 0.1.0 — opgenomen in de goedgekeurde v0.2.0-baseline
 - [x] Versie 0.2.0 — lokaal projectbeheer bouwen
 - [x] Versie 0.2.0 — automatische regressie- en projecttests uitvoeren (27/27 controles en 7/7 buildonderdelen geslaagd)
-- [ ] Versie 0.2.0 — cumulatieve praktijktest op Android Chrome
-- [ ] Versie 0.2.0 — als stabiele baseline goedkeuren
+- [x] Versie 0.2.0 — cumulatieve praktijktest op Android Chrome geslaagd
+- [x] Versie 0.2.0 — door gebruiker goedgekeurd als stabiele baseline
+- [x] Versie 0.3.0 — drone-identificatie en profielwizard bouwen
+- [x] Versie 0.3.0 — automatische regressie- en identificatietests uitvoeren (51/51 controles en 8/8 buildonderdelen geslaagd)
+- [ ] Versie 0.3.0 — cumulatieve praktijktest op Android Chrome
+- [ ] Versie 0.3.0 — als stabiele baseline goedkeuren

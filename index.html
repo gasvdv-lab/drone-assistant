@@ -27,9 +27,9 @@
         <section id="view-home" class="view active" data-view="home">
           <article class="hero-panel">
             <div class="hero-copy">
-            <p class="section-label">PROJECTBASIS · v0.2.0</p>
-              <h2>Je terreinwerk begint met een project.</h2>
-              <p>Maak een lokaal project voor een terrein, inspectie of toekomstige opname. Alles blijft op dit toestel bewaard.</p>
+            <p class="section-label">IDENTIFICATIE · v0.3.0</p>
+              <h2>Weet welke drone je werkelijk gebruikt.</h2>
+              <p>Verzamel modelgegevens en bewijs zonder aannames. De app toont een kandidaat en hoe betrouwbaar die identificatie is.</p>
             </div>
             <div class="radar" aria-hidden="true">
               <span class="radar-sweep"></span>
@@ -39,8 +39,8 @@
 
           <section class="status-grid" aria-label="Systeemstatus">
             <article class="metric-card">
-              <span class="metric-icon">02</span>
-              <div><strong>Projectbasis</strong><small>Actief</small></div>
+              <span class="metric-icon">03</span>
+              <div><strong>Droneprofiel</strong><small>Actief</small></div>
             </article>
             <article class="metric-card">
               <span class="metric-icon">PWA</span>
@@ -55,16 +55,34 @@
           <section class="section-block">
             <div class="section-heading">
             <div><p class="section-label">ACTIEF PROJECT</p><h2 id="activeProjectName">Nog geen project</h2></div>
-              <span class="version-tag">v0.2.0</span>
+              <span class="version-tag">v0.3.0</span>
             </div>
-            <div class="progress-track" aria-label="Voortgang projectbasis"><span style="width: 24%"></span></div>
+            <div class="progress-track" aria-label="Voortgang identificatiebasis"><span style="width: 31%"></span></div>
             <p id="activeProjectMeta" class="muted">Open Projecten om je eerste project te maken.</p>
+            <p id="activeDroneMeta" class="linked-drone">Geen droneprofiel gekoppeld</p>
           </section>
 
           <section class="safety-note">
             <span class="safety-symbol" aria-hidden="true">!</span>
             <div><strong>Veilige grens</strong><p>Drone Assistant analyseert en organiseert later beelden, AR en terreinprojecten. Vluchtbesturing valt buiten de actieve roadmap.</p></div>
           </section>
+        </section>
+
+        <section id="view-drone" class="view" data-view="drone" hidden>
+          <div class="page-intro">
+            <div class="page-intro-row">
+              <div><p class="section-label">BEWIJS BOVEN AANNAME</p><h2>Drone-identificatie</h2></div>
+              <button id="newDroneButton" class="compact-button" type="button">+ Profiel</button>
+            </div>
+            <p>Een werkende XSW UFO-app is een aanwijzing, geen modelbewijs. Voeg gegevens en maximaal drie lokale bewijsfoto’s toe.</p>
+          </div>
+          <div id="droneEmpty" class="empty-state">
+            <span aria-hidden="true">⌁</span>
+            <h3>Model nog onbekend</h3>
+            <p>Start de wizard nu. Ontbrekende gegevens kun je later bij de drone aanvullen.</p>
+            <button id="emptyNewDroneButton" class="primary-button" type="button">Start identificatie</button>
+          </div>
+          <div id="droneList" class="project-list" aria-live="polite"></div>
         </section>
 
         <section id="view-projects" class="view" data-view="projects" hidden>
@@ -102,7 +120,7 @@
             <p>Een mobiele PWA voor dronebeelden, AR, inspecties en terreinkartering. Gebouwd voor Android Chrome en gepubliceerd via GitHub Pages.</p>
           </div>
           <dl class="info-list">
-            <div><dt>Versie</dt><dd>0.2.0</dd></div>
+            <div><dt>Versie</dt><dd>0.3.0</dd></div>
             <div><dt>Testdrone</dt><dd>VISUO XS816 Battle Sharks (te bevestigen)</dd></div>
             <div><dt>Referentie-app</dt><dd>XSW UFO</dd></div>
             <div><dt>Repository</dt><dd>gasvdv-lab/drone-assistant</dd></div>
@@ -114,6 +132,7 @@
       <nav class="bottom-nav" aria-label="Hoofdnavigatie">
         <button class="nav-button active" type="button" data-target="home" aria-current="page"><span>⌂</span>Start</button>
         <button class="nav-button" type="button" data-target="projects"><span>▦</span>Projecten</button>
+        <button class="nav-button" type="button" data-target="drone"><span>⌁</span>Drone</button>
         <button class="nav-button" type="button" data-target="diagnostics"><span>◎</span>Diagnostiek</button>
         <button class="nav-button" type="button" data-target="about"><span>i</span>Over</button>
       </nav>
@@ -138,6 +157,44 @@
         <p id="deleteMessage" class="muted"></p>
         <div class="dialog-actions"><button class="secondary-button" value="cancel">Annuleren</button><button id="confirmDelete" class="danger-button" value="confirm">Verwijderen</button></div>
       </form>
+    </dialog>
+
+    <dialog id="droneDialog" class="app-dialog wide-dialog">
+      <form id="droneForm" method="dialog">
+        <div class="dialog-heading"><div><p class="section-label">IDENTIFICATIEWIZARD</p><h2 id="droneDialogTitle">Nieuw droneprofiel</h2></div><button class="icon-button" value="cancel" aria-label="Sluiten">×</button></div>
+        <input id="droneId" type="hidden" />
+        <div class="form-section"><h3>1. Basisgegevens</h3>
+          <label>Profielnaam<input id="droneName" maxlength="80" required value="Mijn VISUO-drone" /></label>
+          <div class="form-grid"><label>Merk<input id="droneBrand" maxlength="50" value="VISUO/TIANQU" /></label><label>Modelcode<input id="droneModelCode" maxlength="40" placeholder="Bijvoorbeeld XS816" autocapitalize="characters" /></label></div>
+          <label>Variant of opschrift<input id="droneVariant" maxlength="60" placeholder="Bijvoorbeeld Battle Sharks of XS816L" /></label>
+        </div>
+        <div class="form-section"><h3>2. App en verbinding</h3>
+          <div class="form-grid"><label>Werkende app<input id="droneApp" maxlength="60" value="XSW UFO" /></label><label>Appversie<input id="droneAppVersion" maxlength="30" placeholder="Later invullen" /></label></div>
+          <label>Wifi-netwerknaam<input id="droneWifi" maxlength="80" placeholder="Handmatig uit Android overnemen" /></label>
+          <div class="form-grid"><label>Aantal camera’s<select id="droneCameras"><option value="unknown">Nog onbekend</option><option value="one">Eén</option><option value="two">Twee</option></select></label><label>Waar worden opnames bewaard?<select id="droneStorage"><option value="unknown">Nog onbekend</option><option value="phone">Op telefoon</option><option value="drone">Op drone</option><option value="both">Beide</option></select></label></div>
+        </div>
+        <fieldset class="form-section evidence-fieldset"><legend>3. Waarop is de identificatie gebaseerd?</legend>
+          <label><input type="checkbox" name="evidence" value="sticker" /> Sticker/modelplaatje</label>
+          <label><input type="checkbox" name="evidence" value="manual" /> Handleiding</label>
+          <label><input type="checkbox" name="evidence" value="box" /> Verpakking</label>
+          <label><input type="checkbox" name="evidence" value="visual" /> Uiterlijk drone</label>
+          <label><input type="checkbox" name="evidence" value="xsw" /> Werkt met XSW UFO</label>
+          <label><input type="checkbox" name="evidence" value="wifi" /> Wifi-naam</label>
+        </fieldset>
+        <div class="form-section"><h3>4. Bewijsfoto’s op dit toestel</h3><p class="field-help">Maximaal drie foto’s. Ze worden verkleind en uitsluitend lokaal in deze browser opgeslagen.</p>
+          <input id="dronePhotos" type="file" accept="image/*" multiple />
+          <div id="photoPreview" class="photo-preview"></div>
+        </div>
+        <div class="form-section"><h3>5. Project koppelen</h3><label>Project<select id="droneProject"><option value="">Niet koppelen</option></select></label></div>
+        <label>Notities<textarea id="droneNotes" maxlength="800" rows="4" placeholder="Kenmerken, opschriften of zaken die nog gecontroleerd moeten worden"></textarea></label>
+        <div id="identificationPreview" class="identification-preview" aria-live="polite"></div>
+        <p id="droneFormError" class="form-error" aria-live="polite"></p>
+        <div class="dialog-actions"><button class="secondary-button" value="cancel" type="button" data-close-drone>Annuleren</button><button class="primary-button inline" type="submit">Profiel bewaren</button></div>
+      </form>
+    </dialog>
+
+    <dialog id="deleteDroneDialog" class="app-dialog compact-dialog">
+      <form method="dialog"><p class="section-label">PROFIEL VERWIJDEREN</p><h2>Weet je het zeker?</h2><p id="deleteDroneMessage" class="muted"></p><div class="dialog-actions"><button class="secondary-button" value="cancel">Annuleren</button><button id="confirmDeleteDrone" class="danger-button" value="confirm">Verwijderen</button></div></form>
     </dialog>
 
     <div id="updateBanner" class="update-banner" hidden>

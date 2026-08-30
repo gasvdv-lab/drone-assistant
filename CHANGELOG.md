@@ -2,6 +2,28 @@
 
 Alle belangrijke wijzigingen aan Drone Assistant worden hier cumulatief bijgehouden.
 
+## [0.3.0] — 2026-08-30
+
+### Toegevoegd
+
+- drone-identificatie- en profielwizard;
+- bewijsstatussen van onbekend tot bevestigd;
+- deterministische zekerheidsscore;
+- kandidaatmodellen XS816, XS816L en XS809S;
+- registratie van XSW UFO, appversie en wifi-naam;
+- camera- en opslagkenmerken;
+- maximaal drie lokaal verkleinde bewijsfoto's;
+- compatibiliteitsmatrix;
+- koppeling tussen droneprofiel en project;
+- migratie van v0.2-projectgegevens naar schema 2;
+- herstelkopie voor droneprofielen.
+
+### Behouden
+
+- stabiele v0.2.0-projectbasis;
+- statische GitHub Pages-app;
+- geen rechtstreekse camera-, locatie-, netwerk- of dronebesturingstoegang.
+
 ## [0.2.0] — 2026-08-28
 
 ### Toegevoegd
