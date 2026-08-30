@@ -1,7 +1,19 @@
 import { createProjectStore } from './project-state.js';
 import { calculateIdentification, createDroneProfileStore } from './drone-profile-state.js';
 
-const APP_VERSION = '0.3.0';
+const APP_VERSION = '0.3.1';
+
+const KNOWN_DRONE_PROFILE = Object.freeze({
+  name: 'Mijn VISUO XS809HW',
+  brand: 'VISUO/TIANQU',
+  modelCode: 'XS809HW',
+  variant: 'Wifi FPV / altitude hold',
+  referenceApp: 'XSW UFO',
+  cameras: 'one',
+  storageMode: 'phone',
+  evidence: ['visual', 'xsw'],
+  notes: 'Zeer waarschijnlijk geïdentificeerd op basis van behuizing, onderzijde, VISUO-batterij en werkende XSW UFO-app. Eén eenvoudige wifi-FPV-camera. Geen GPS, tweede camera of optical flow. Exacte cameraresolutie nog niet fysiek bevestigd.'
+});
 
 const views = [...document.querySelectorAll('.view')];
 const navButtons = [...document.querySelectorAll('.nav-button')];
@@ -304,7 +316,7 @@ function openDroneForm(profile = null) {
   document.querySelector('#droneName').value = profile?.name || 'Mijn VISUO-drone';
   document.querySelector('#droneBrand').value = profile?.brand || 'VISUO/TIANQU';
   document.querySelector('#droneModelCode').value = profile?.modelCode || '';
-  document.querySelector('#droneVariant').value = profile?.variant || 'Battle Sharks';
+  document.querySelector('#droneVariant').value = profile?.variant || '';
   document.querySelector('#droneApp').value = profile?.referenceApp || 'XSW UFO';
   document.querySelector('#droneAppVersion').value = profile?.appVersion || '';
   document.querySelector('#droneWifi').value = profile?.wifiName || '';
@@ -313,6 +325,20 @@ function openDroneForm(profile = null) {
   document.querySelector('#droneNotes').value = profile?.notes || '';
   document.querySelectorAll('input[name="evidence"]').forEach((input) => { input.checked = profile?.evidence?.includes(input.value) || (!profile && input.value === 'xsw'); });
   populateProjectSelect(profile?.id); renderPhotoPreview(); updateIdentificationPreview(); droneDialog.showModal();
+}
+
+function openKnownDroneProfile() {
+  openDroneForm();
+  document.querySelector('#droneName').value = KNOWN_DRONE_PROFILE.name;
+  document.querySelector('#droneBrand').value = KNOWN_DRONE_PROFILE.brand;
+  document.querySelector('#droneModelCode').value = KNOWN_DRONE_PROFILE.modelCode;
+  document.querySelector('#droneVariant').value = KNOWN_DRONE_PROFILE.variant;
+  document.querySelector('#droneApp').value = KNOWN_DRONE_PROFILE.referenceApp;
+  document.querySelector('#droneCameras').value = KNOWN_DRONE_PROFILE.cameras;
+  document.querySelector('#droneStorage').value = KNOWN_DRONE_PROFILE.storageMode;
+  document.querySelector('#droneNotes').value = KNOWN_DRONE_PROFILE.notes;
+  document.querySelectorAll('input[name="evidence"]').forEach((input) => { input.checked = KNOWN_DRONE_PROFILE.evidence.includes(input.value); });
+  updateIdentificationPreview();
 }
 
 function compatibilityRows(profile) {
@@ -342,6 +368,7 @@ function renderDroneProfiles() {
 
 document.querySelector('#newDroneButton').addEventListener('click', () => openDroneForm());
 document.querySelector('#emptyNewDroneButton').addEventListener('click', () => openDroneForm());
+document.querySelector('#loadKnownDroneButton').addEventListener('click', openKnownDroneProfile);
 document.querySelector('[data-close-drone]').addEventListener('click', () => droneDialog.close());
 droneForm.addEventListener('input', (event) => { if (event.target.id !== 'dronePhotos') updateIdentificationPreview(); });
 document.querySelector('#dronePhotos').addEventListener('change', async (event) => {

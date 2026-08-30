@@ -23,10 +23,12 @@ export function calculateIdentification(input) {
 
 export function candidateModels(modelCode = '') {
   const code = clean(modelCode, 40).toUpperCase();
+  if (code.includes('XS809HW')) return ['VISUO XS809HW'];
+  if (code.includes('XS809W')) return ['VISUO XS809W', 'VISUO XS809HW'];
   if (code.includes('XS816L')) return ['VISUO XS816L Battle Sharks'];
   if (code.includes('XS816')) return ['VISUO XS816 Battle Sharks', 'VISUO XS816L Battle Sharks'];
   if (code.includes('XS809S')) return ['VISUO XS809S Battle Sharks'];
-  return ['VISUO XS816 Battle Sharks', 'VISUO XS816L Battle Sharks', 'VISUO XS809S Battle Sharks'];
+  return ['VISUO XS809HW', 'VISUO XS809W'];
 }
 
 function normalize(input, existing = {}) {
