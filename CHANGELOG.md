@@ -2,6 +2,18 @@
 
 Alle belangrijke wijzigingen aan Drone Assistant worden hier cumulatief bijgehouden.
 
+## [0.4.0.1] — 2026-08-30
+
+### Gecorrigeerd
+
+- lokale camera- en streamaanvragen omzeilen voortaan de serviceworker;
+- een mislukte lokale aanvraag kan niet langer de gecachete startpagina als vals HTTP-succes teruggeven;
+- offline fallback naar `index.html` geldt alleen nog voor navigatie binnen Drone Assistant.
+
+### Aanleiding
+
+De eerste echte dronetest meldde een HTTP-antwoord op `192.168.0.20`, terwijl alle beeldpogingen op `/` mislukten. Door deze correctie wordt de volgende meting betrouwbaar.
+
 ## [0.4.0] — 2026-08-30
 
 ### Toegevoegd

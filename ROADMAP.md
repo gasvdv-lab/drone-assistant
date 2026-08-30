@@ -1,7 +1,7 @@
 # Drone Assistant — Master Roadmap
 
 **Documentstatus:** vastgesteld startplan  
-**Huidige projectstatus:** v0.4.0 Live Video Feasibility gebouwd en automatisch getest; echte drone-wifitest is de volgende stap  
+**Huidige projectstatus:** v0.4.0.1 diagnostische cachecorrectie gebouwd; betrouwbare hertest met echte drone-wifi is de volgende stap  
 **Eerste doelplatform:** beheerde Android-telefoon, Chrome, zonder APK  
 **Distributie en testworkflow:** GitHub-repository met mobiele PWA via een vaste GitHub Pages-link  
 **Vaste repository:** `https://github.com/gasvdv-lab/drone-assistant`  
@@ -947,5 +947,7 @@ Voor Fase 0 verzamelen we eerst:
 - [x] Afzonderlijke praktijktest- en testrapportbestanden vanaf v0.4.0 geschrapt
 - [x] Versie 0.4.0 — veilige Live Video Feasibility-module bouwen
 - [x] Versie 0.4.0 — automatische regressietests uitvoeren (88/88 controles en 9/9 productieonderdelen geslaagd)
+- [x] Versie 0.4.0.1 — voorkomen dat offlinecache lokale camerafouten als HTTP-succes presenteert
+- [ ] Versie 0.4.0.1 — `192.168.0.20` en de werkelijk vermelde gateway opnieuw testen
 - [ ] Versie 0.4.0 — via GitHub Pages met de echte drone-wifi testen
 - [ ] Versie 0.4.0 — beslissen of v0.4.1 livevideospeler haalbaar is

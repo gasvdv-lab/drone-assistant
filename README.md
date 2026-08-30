@@ -1,4 +1,4 @@
-# Drone Assistant v0.4.0
+# Drone Assistant v0.4.0.1
 
 Mobiele GitHub Pages-PWA voor de VISUO XS809HW. Deze versie onderzoekt veilig of de camerastream rechtstreeks in Android Chrome bereikbaar is. De app bestuurt de drone niet.
 
@@ -24,7 +24,13 @@ De cache bewaart de appcode, niet automatisch de camerastream. Een nieuwe versie
 
 De app start met `192.168.0.1` als veilige hypothese. De browser kan het echte gateway-IP niet automatisch uitlezen.
 
-## Nieuw in v0.4.0
+## Correctie in v0.4.0.1
+
+- lokale camera-aanvragen worden nooit meer door de offlinecache vervangen;
+- een groen HTTP-resultaat betekent nu werkelijk dat het lokale adres antwoordde;
+- alleen navigatie binnen Drone Assistant krijgt nog de offline startpagina als fallback.
+
+## Livevideomodule
 
 - afzonderlijke module **Live**;
 - uitleg over drone-wifi, offlinecache en gateway-IP;
@@ -65,18 +71,18 @@ Afzonderlijke praktijktest- en testrapportbestanden worden vanaf deze versie nie
 
 ## Uploaden naar GitHub
 
-1. Pak `Drone-Assistant-v0.4.0.zip` uit.
+1. Pak `Drone-Assistant-v0.4.0.1.zip` uit.
 2. Open https://github.com/gasvdv-lab/drone-assistant.
 3. Kies **Add file → Upload files**.
 4. Upload de volledige inhoud rechtstreeks naar de hoofdmap.
-5. Commit met bericht `Upgrade Drone Assistant naar v0.4.0`.
+5. Commit met bericht `Corrigeer livevideodiagnose naar v0.4.0.1`.
 6. Wacht op GitHub Pages en open de vaste app-link eenmaal met internet.
 
 Geen package-installatie, npm-opdracht of buildstap is nodig.
 
 ## Automatische teststatus
 
-- **88/88 automatische controles geslaagd**
+- **90/90 automatische controles geslaagd**
 - **9/9 productieonderdelen aanwezig**
 - syntaxis van de Live-module en hulplogica geldig
 - privé-IP- en lokale-URL-validatie inhoudelijk getest
