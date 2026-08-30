@@ -27,9 +27,9 @@
         <section id="view-home" class="view active" data-view="home">
           <article class="hero-panel">
             <div class="hero-copy">
-              <p class="section-label">BASISVERSIE · v0.1.0</p>
-              <h2>Klaar voor de eerste veldtest.</h2>
-              <p>De stabiele webbasis staat klaar. Deze versie bestuurt de drone niet en vraagt nog geen camera- of locatietoegang.</p>
+            <p class="section-label">PROJECTBASIS · v0.2.0</p>
+              <h2>Je terreinwerk begint met een project.</h2>
+              <p>Maak een lokaal project voor een terrein, inspectie of toekomstige opname. Alles blijft op dit toestel bewaard.</p>
             </div>
             <div class="radar" aria-hidden="true">
               <span class="radar-sweep"></span>
@@ -39,8 +39,8 @@
 
           <section class="status-grid" aria-label="Systeemstatus">
             <article class="metric-card">
-              <span class="metric-icon">01</span>
-              <div><strong>Appbasis</strong><small>Actief</small></div>
+              <span class="metric-icon">02</span>
+              <div><strong>Projectbasis</strong><small>Actief</small></div>
             </article>
             <article class="metric-card">
               <span class="metric-icon">PWA</span>
@@ -54,11 +54,11 @@
 
           <section class="section-block">
             <div class="section-heading">
-              <div><p class="section-label">PROJECTSTATUS</p><h2>Fundament</h2></div>
-              <span class="version-tag">v0.1.0</span>
+            <div><p class="section-label">ACTIEF PROJECT</p><h2 id="activeProjectName">Nog geen project</h2></div>
+              <span class="version-tag">v0.2.0</span>
             </div>
-            <div class="progress-track" aria-label="Voortgang eerste basisfase"><span style="width: 16%"></span></div>
-            <p class="muted">Eerste technische laag van de master-roadmap. Projectbeheer volgt in v0.2.0.</p>
+            <div class="progress-track" aria-label="Voortgang projectbasis"><span style="width: 24%"></span></div>
+            <p id="activeProjectMeta" class="muted">Open Projecten om je eerste project te maken.</p>
           </section>
 
           <section class="safety-note">
@@ -67,19 +67,21 @@
           </section>
         </section>
 
-        <section id="view-modules" class="view" data-view="modules" hidden>
+        <section id="view-projects" class="view" data-view="projects" hidden>
           <div class="page-intro">
-            <p class="section-label">MASTERPLAN</p>
-            <h2>Toekomstige modules</h2>
-            <p>Deze onderdelen zijn zichtbaar als vooruitblik, maar worden pas per stabiele versie geactiveerd.</p>
+            <div class="page-intro-row">
+              <div><p class="section-label">LOKAAL OP DIT TOESTEL</p><h2>Projecten</h2></div>
+              <button id="newProjectButton" class="compact-button" type="button">+ Nieuw</button>
+            </div>
+            <p>Projecten blijven uitsluitend in deze browser bewaard. Browsergegevens wissen verwijdert ook de projecten.</p>
           </div>
-          <div class="module-list">
-            <article class="module-card"><span>02</span><div><h3>Projecten</h3><p>Lokaal projectbeheer en herstel.</p></div><b>Binnenkort</b></article>
-            <article class="module-card"><span>03</span><div><h3>Droneprofiel</h3><p>VISUO XS816 en XSW UFO.</p></div><b>Binnenkort</b></article>
-            <article class="module-card"><span>04</span><div><h3>Opnames</h3><p>Foto- en video-import met galerij.</p></div><b>Gepland</b></article>
-            <article class="module-card"><span>08</span><div><h3>AR & markers</h3><p>Ground AR en fysieke ankers.</p></div><b>Gepland</b></article>
-            <article class="module-card"><span>11</span><div><h3>Terreinkaart</h3><p>Visuele 2D-kartering en metingen.</p></div><b>Gepland</b></article>
+          <div id="projectEmpty" class="empty-state">
+            <span aria-hidden="true">◇</span>
+            <h3>Nog geen projecten</h3>
+            <p>Maak je eerste project om terrein- en inspectiegegevens later samen te houden.</p>
+            <button id="emptyNewProjectButton" class="primary-button" type="button">Maak eerste project</button>
           </div>
+          <div id="projectList" class="project-list" aria-live="polite"></div>
         </section>
 
         <section id="view-diagnostics" class="view" data-view="diagnostics" hidden>
@@ -100,22 +102,43 @@
             <p>Een mobiele PWA voor dronebeelden, AR, inspecties en terreinkartering. Gebouwd voor Android Chrome en gepubliceerd via GitHub Pages.</p>
           </div>
           <dl class="info-list">
-            <div><dt>Versie</dt><dd>0.1.0</dd></div>
+            <div><dt>Versie</dt><dd>0.2.0</dd></div>
             <div><dt>Testdrone</dt><dd>VISUO XS816 Battle Sharks (te bevestigen)</dd></div>
             <div><dt>Referentie-app</dt><dd>XSW UFO</dd></div>
             <div><dt>Repository</dt><dd>gasvdv-lab/drone-assistant</dd></div>
-            <div><dt>Opslag</dt><dd>In deze versie nog geen projectgegevens</dd></div>
+            <div><dt>Opslag</dt><dd>Projectgegevens lokaal in deze browser</dd></div>
           </dl>
         </section>
       </main>
 
       <nav class="bottom-nav" aria-label="Hoofdnavigatie">
         <button class="nav-button active" type="button" data-target="home" aria-current="page"><span>⌂</span>Start</button>
-        <button class="nav-button" type="button" data-target="modules"><span>▦</span>Modules</button>
+        <button class="nav-button" type="button" data-target="projects"><span>▦</span>Projecten</button>
         <button class="nav-button" type="button" data-target="diagnostics"><span>◎</span>Diagnostiek</button>
         <button class="nav-button" type="button" data-target="about"><span>i</span>Over</button>
       </nav>
     </div>
+
+    <dialog id="projectDialog" class="app-dialog">
+      <form id="projectForm" method="dialog">
+        <div class="dialog-heading"><div><p class="section-label">PROJECTGEGEVENS</p><h2 id="projectDialogTitle">Nieuw project</h2></div><button class="icon-button" value="cancel" aria-label="Sluiten">×</button></div>
+        <input id="projectId" type="hidden" />
+        <label>Projectnaam<input id="projectName" name="projectName" maxlength="80" required placeholder="Bijvoorbeeld Terrein Bomal" /></label>
+        <label>Locatie<input id="projectLocation" name="projectLocation" maxlength="120" placeholder="Optioneel" /></label>
+        <label>Beschrijving<textarea id="projectDescription" name="projectDescription" maxlength="500" rows="4" placeholder="Doel of korte toelichting"></textarea></label>
+        <p id="projectFormError" class="form-error" aria-live="polite"></p>
+        <div class="dialog-actions"><button class="secondary-button" value="cancel" type="button" data-close-project>Annuleren</button><button class="primary-button inline" type="submit">Project bewaren</button></div>
+      </form>
+    </dialog>
+
+    <dialog id="deleteDialog" class="app-dialog compact-dialog">
+      <form method="dialog">
+        <p class="section-label">PROJECT VERWIJDEREN</p>
+        <h2>Weet je het zeker?</h2>
+        <p id="deleteMessage" class="muted"></p>
+        <div class="dialog-actions"><button class="secondary-button" value="cancel">Annuleren</button><button id="confirmDelete" class="danger-button" value="confirm">Verwijderen</button></div>
+      </form>
+    </dialog>
 
     <div id="updateBanner" class="update-banner" hidden>
       <span>Een nieuwe appversie staat klaar.</span>

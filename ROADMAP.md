@@ -1,7 +1,7 @@
 # Drone Assistant — Master Roadmap
 
 **Documentstatus:** vastgesteld startplan  
-**Huidige projectstatus:** v0.1.0 gebouwd en automatisch getest — praktijktest op Android Chrome openstaand  
+**Huidige projectstatus:** v0.2.0 gebouwd en automatisch getest — cumulatieve praktijktest op Android Chrome openstaand  
 **Eerste doelplatform:** beheerde Android-telefoon, Chrome, zonder APK  
 **Distributie en testworkflow:** GitHub-repository met mobiele PWA via een vaste GitHub Pages-link  
 **Vaste repository:** `https://github.com/gasvdv-lab/drone-assistant`  
@@ -913,3 +913,7 @@ Daarna bouwen we versie 0.1.0: de lege stabiele PWA, testbasis, offline app-shel
 - [x] Versie 0.1.0 — automatische tests uitvoeren (15/15 controles en 6/6 buildonderdelen geslaagd)
 - [ ] Versie 0.1.0 — praktijktest op Android Chrome
 - [ ] Versie 0.1.0 — als stabiele baseline goedkeuren
+- [x] Versie 0.2.0 — lokaal projectbeheer bouwen
+- [x] Versie 0.2.0 — automatische regressie- en projecttests uitvoeren (27/27 controles en 7/7 buildonderdelen geslaagd)
+- [ ] Versie 0.2.0 — cumulatieve praktijktest op Android Chrome
+- [ ] Versie 0.2.0 — als stabiele baseline goedkeuren
