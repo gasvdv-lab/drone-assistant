@@ -2,7 +2,7 @@ import { createProjectStore } from './project-state.js';
 import { calculateIdentification, createDroneProfileStore } from './drone-profile-state.js';
 import { createLocalStreamUrl, isPrivateIpv4, validateLocalStreamUrl } from './live-video-utils.js';
 
-const APP_VERSION = '0.4.0';
+const APP_VERSION = '0.4.0.1';
 const LIVE_IP_KEY = 'drone-assistant.live.camera-ip.v1';
 const LIVE_LOG_KEY = 'drone-assistant.live.log.v1';
 
