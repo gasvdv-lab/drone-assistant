@@ -91,7 +91,7 @@ main { padding: 18px; }
 .hardware-facts div { display: grid; grid-template-columns: minmax(7rem, .8fr) minmax(0, 1.4fr); gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--line); }
 .hardware-facts dt { color: var(--muted); }
 .hardware-facts dd { margin: 0; color: var(--text); font-weight: 750; }
-.bottom-nav { position: fixed; z-index: 20; left: 50%; bottom: 0; display: grid; grid-template-columns: repeat(5, 1fr); width: min(100%, 760px); padding: 8px 8px var(--safe-bottom); transform: translateX(-50%); border-top: 1px solid var(--line); background: rgba(6,19,27,.94); backdrop-filter: blur(18px); }
+.bottom-nav { position: fixed; z-index: 20; left: 50%; bottom: 0; display: grid; grid-template-columns: repeat(6, 1fr); width: min(100%, 760px); padding: 8px 8px var(--safe-bottom); transform: translateX(-50%); border-top: 1px solid var(--line); background: rgba(6,19,27,.94); backdrop-filter: blur(18px); }
 .nav-button { min-height: 58px; border: 0; border-radius: 13px; background: transparent; color: var(--muted); font-size: .7rem; font-weight: 750; }
 .nav-button span { display: block; margin-bottom: 4px; color: inherit; font-size: 1.2rem; }
 .nav-button.active { background: rgba(105,230,198,.09); color: var(--accent); }
@@ -132,6 +132,27 @@ main { padding: 18px; }
 .compatibility-grid { display: grid; grid-template-columns: 1fr auto; gap: 7px 12px; margin-top: 12px; font-size: .75rem; }
 .compatibility-grid span:nth-child(2n) { font-weight: 850; }
 .status-confirmed { color: var(--accent); } .status-research { color: var(--accent-2); } .status-excluded { color: var(--muted); }
+.instruction-list { margin: 12px 0 0; padding-left: 1.25rem; color: var(--muted); line-height: 1.55; }
+.instruction-list li + li { margin-top: 8px; }
+.instruction-list strong { color: var(--text); }
+.standalone-label { display: grid; gap: 7px; margin-top: 13px; color: var(--muted); font-size: .78rem; font-weight: 750; }
+.standalone-label input, .standalone-label select { width: 100%; padding: 13px 14px; border: 1px solid var(--line); border-radius: 12px; outline: none; background: #071820; color: var(--text); font: inherit; }
+.standalone-label input:focus, .standalone-label select:focus { border-color: var(--accent); }
+.button-row { display: grid; grid-template-columns: 1fr auto; gap: 9px; align-items: end; }
+.button-row .secondary-button { margin-top: 14px; }
+.stream-stage { position: relative; display: grid; place-items: center; overflow: hidden; min-height: 230px; margin-top: 14px; border: 1px solid var(--line); border-radius: 16px; background: #020b10; }
+.stream-stage img { display: block; width: 100%; min-height: 230px; max-height: 60vh; object-fit: contain; }
+.stream-stage img[hidden] { display: none; }
+.stream-stage > div { display: grid; place-items: center; gap: 7px; color: var(--muted); text-align: center; }
+.stream-stage > div span { color: var(--accent); font-size: 2rem; }
+.stream-stage > div strong { color: var(--text); }
+.stream-stage > div small { max-width: 260px; line-height: 1.4; }
+.left-feedback { min-height: 0; text-align: left; line-height: 1.45; }
+.live-log { display: grid; gap: 8px; margin-top: 12px; }
+.live-log-entry { padding: 10px 12px; border-left: 3px solid var(--line); border-radius: 8px; background: rgba(7,24,32,.7); color: var(--muted); font-size: .76rem; line-height: 1.4; overflow-wrap: anywhere; }
+.live-log-entry.success { border-color: var(--accent); }
+.live-log-entry.warning { border-color: var(--accent-2); }
+.live-log-entry.error { border-color: var(--danger); }
 @media (max-width: 520px) {
   .hero-panel { grid-template-columns: 1fr 82px; padding: 21px; }
   .radar { width: 82px; height: 82px; }
@@ -144,5 +165,7 @@ main { padding: 18px; }
   .primary-button.inline { width: 100%; }
   .form-grid, .evidence-fieldset { grid-template-columns: 1fr; }
   .nav-button { padding-inline: 2px; font-size: .62rem; }
+  .button-row { grid-template-columns: 1fr; }
+  .button-row .secondary-button { margin-top: 0; }
 }
 @media (prefers-reduced-motion: reduce) { .radar-sweep { animation: none; } }
