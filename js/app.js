@@ -1,6 +1,7 @@
 import { createProjectStore } from './project-state.js';
+import { calculateIdentification, createDroneProfileStore } from './drone-profile-state.js';
 
-const APP_VERSION = '0.2.0';
+const APP_VERSION = '0.3.0';
 
 const views = [...document.querySelectorAll('.view')];
 const navButtons = [...document.querySelectorAll('.nav-button')];
@@ -19,11 +20,24 @@ const projectFormError = document.querySelector('#projectFormError');
 const deleteDialog = document.querySelector('#deleteDialog');
 const activeProjectName = document.querySelector('#activeProjectName');
 const activeProjectMeta = document.querySelector('#activeProjectMeta');
+const activeDroneMeta = document.querySelector('#activeDroneMeta');
+const droneList = document.querySelector('#droneList');
+const droneEmpty = document.querySelector('#droneEmpty');
+const droneDialog = document.querySelector('#droneDialog');
+const droneForm = document.querySelector('#droneForm');
+const droneFormError = document.querySelector('#droneFormError');
+const deleteDroneDialog = document.querySelector('#deleteDroneDialog');
+const photoPreview = document.querySelector('#photoPreview');
 let deleteProjectId = null;
+let deleteDroneId = null;
+let currentPhotos = [];
 let projectStore = null;
+let droneProfileStore = null;
 
 try { projectStore = createProjectStore(localStorage); }
 catch (error) { console.error('DA-DATA-000', error); }
+try { droneProfileStore = createDroneProfileStore(localStorage); }
+catch (error) { console.error('DA-DRONE-000', error); }
 
 function showView(target) {
   views.forEach((view) => {
@@ -39,6 +53,7 @@ function showView(target) {
   });
   if (target === 'diagnostics') renderDiagnostics();
   if (target === 'projects') renderProjects();
+  if (target === 'drone') renderDroneProfiles();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -58,6 +73,7 @@ function diagnosticData() {
   return [
     ['Appversie', APP_VERSION],
     ['Lokale projecten', projectStore ? String(projectStore.list().length) : 'Opslagfout'],
+    ['Droneprofielen', droneProfileStore ? String(droneProfileStore.list().length) : 'Opslagfout'],
     ['Status netwerk', navigator.onLine ? 'Online' : 'Offline'],
     ['Browser', navigator.userAgent],
     ['Scherm', `${window.screen.width} × ${window.screen.height}`],
@@ -138,6 +154,8 @@ function renderActiveProject() {
   const project = state.projects.find((item) => item.id === state.activeProjectId);
   activeProjectName.textContent = project?.name || 'Nog geen project';
   activeProjectMeta.textContent = project ? `${project.location || 'Geen locatie'} · bijgewerkt ${formatDate(project.updatedAt)}` : 'Open Projecten om je eerste project te maken.';
+  const profile = project?.droneProfileId && droneProfileStore ? droneProfileStore.get(project.droneProfileId) : null;
+  activeDroneMeta.textContent = profile ? `Drone: ${profile.name} · ${statusLabel(profile.identificationStatus)} ${profile.confidenceScore}%` : 'Geen droneprofiel gekoppeld';
 }
 
 function projectCard(project, activeId) {
@@ -214,6 +232,152 @@ projectList.addEventListener('click', (event) => {
 document.querySelector('#confirmDelete').addEventListener('click', () => {
   if (deleteProjectId && projectStore) projectStore.remove(deleteProjectId);
   deleteProjectId = null; renderProjects();
+});
+
+const STATUS_LABELS = { confirmed: 'Bevestigd', 'very-likely': 'Zeer waarschijnlijk', likely: 'Waarschijnlijk', candidate: 'Mogelijke kandidaat', unknown: 'Onbekend' };
+const COMPATIBILITY_LABELS = { confirmed: 'Bevestigd', limited: 'Beperkt', research: 'Onderzoeken', unsupported: 'Niet ondersteund', excluded: 'Niet voorzien' };
+function statusLabel(status) { return STATUS_LABELS[status] || 'Onbekend'; }
+
+function droneFormData() {
+  return {
+    name: document.querySelector('#droneName').value,
+    brand: document.querySelector('#droneBrand').value,
+    modelCode: document.querySelector('#droneModelCode').value,
+    variant: document.querySelector('#droneVariant').value,
+    referenceApp: document.querySelector('#droneApp').value,
+    appVersion: document.querySelector('#droneAppVersion').value,
+    wifiName: document.querySelector('#droneWifi').value,
+    cameras: document.querySelector('#droneCameras').value,
+    storageMode: document.querySelector('#droneStorage').value,
+    evidence: [...document.querySelectorAll('input[name="evidence"]:checked')].map((input) => input.value),
+    photos: currentPhotos,
+    notes: document.querySelector('#droneNotes').value
+  };
+}
+
+function updateIdentificationPreview() {
+  const data = droneFormData();
+  const result = calculateIdentification(data);
+  const model = data.modelCode ? `${data.brand || 'Onbekend merk'} ${data.modelCode}` : 'Exact model nog onbekend';
+  document.querySelector('#identificationPreview').innerHTML = `<strong>${statusLabel(result.status)} · ${result.score}%</strong>${model}. De score is gebaseerd op ${result.evidence.length} geregistreerde bewijsbron(nen).`;
+}
+
+function renderPhotoPreview() {
+  photoPreview.replaceChildren(...currentPhotos.map((source, index) => {
+    const item = document.createElement('div'); item.className = 'photo-item';
+    const image = document.createElement('img'); image.src = source; image.alt = `Bewijsfoto ${index + 1}`;
+    const remove = document.createElement('button'); remove.type = 'button'; remove.textContent = '×'; remove.setAttribute('aria-label', `Verwijder bewijsfoto ${index + 1}`);
+    remove.addEventListener('click', () => { currentPhotos.splice(index, 1); renderPhotoPreview(); });
+    item.append(image, remove); return item;
+  }));
+}
+
+function compressImage(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error('DA-PHOTO-001'));
+    reader.onload = () => {
+      const image = new Image();
+      image.onerror = () => reject(new Error('DA-PHOTO-002'));
+      image.onload = () => {
+        const scale = Math.min(1, 720 / Math.max(image.width, image.height));
+        const canvas = document.createElement('canvas'); canvas.width = Math.round(image.width * scale); canvas.height = Math.round(image.height * scale);
+        canvas.getContext('2d').drawImage(image, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL('image/jpeg', 0.72));
+      };
+      image.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function populateProjectSelect(profileId = null) {
+  const select = document.querySelector('#droneProject');
+  const linked = profileId && projectStore ? projectStore.list().find((project) => project.droneProfileId === profileId)?.id : '';
+  select.replaceChildren(new Option('Niet koppelen', ''), ...(projectStore ? projectStore.list().map((project) => new Option(project.name, project.id, false, project.id === linked)) : []));
+}
+
+function openDroneForm(profile = null) {
+  droneForm.reset(); droneFormError.textContent = ''; currentPhotos = [...(profile?.photos || [])];
+  document.querySelector('#droneDialogTitle').textContent = profile ? 'Droneprofiel wijzigen' : 'Nieuw droneprofiel';
+  document.querySelector('#droneId').value = profile?.id || '';
+  document.querySelector('#droneName').value = profile?.name || 'Mijn VISUO-drone';
+  document.querySelector('#droneBrand').value = profile?.brand || 'VISUO/TIANQU';
+  document.querySelector('#droneModelCode').value = profile?.modelCode || '';
+  document.querySelector('#droneVariant').value = profile?.variant || 'Battle Sharks';
+  document.querySelector('#droneApp').value = profile?.referenceApp || 'XSW UFO';
+  document.querySelector('#droneAppVersion').value = profile?.appVersion || '';
+  document.querySelector('#droneWifi').value = profile?.wifiName || '';
+  document.querySelector('#droneCameras').value = profile?.cameras || 'unknown';
+  document.querySelector('#droneStorage').value = profile?.storageMode || 'unknown';
+  document.querySelector('#droneNotes').value = profile?.notes || '';
+  document.querySelectorAll('input[name="evidence"]').forEach((input) => { input.checked = profile?.evidence?.includes(input.value) || (!profile && input.value === 'xsw'); });
+  populateProjectSelect(profile?.id); renderPhotoPreview(); updateIdentificationPreview(); droneDialog.showModal();
+}
+
+function compatibilityRows(profile) {
+  const names = { profile: 'Profielbeheer', projectLink: 'Projectkoppeling', mediaImport: 'Media-import', liveView: 'Livebeeld', groundAr: 'Ground AR', flightControl: 'Vluchtbesturing' };
+  const wrapper = document.createElement('div'); wrapper.className = 'compatibility-grid';
+  Object.entries(profile.compatibility).forEach(([key, value]) => { const name = document.createElement('span'); name.textContent = names[key] || key; const status = document.createElement('span'); status.className = `status-${value}`; status.textContent = COMPATIBILITY_LABELS[value] || value; wrapper.append(name, status); });
+  return wrapper;
+}
+
+function droneCard(profile) {
+  const card = document.createElement('article'); card.className = 'drone-card';
+  const header = document.createElement('div'); header.className = 'drone-card-header';
+  const info = document.createElement('div'); const name = document.createElement('h3'); name.textContent = profile.name;
+  const meta = document.createElement('p'); meta.textContent = `${profile.brand || 'Onbekend merk'} · ${profile.modelCode || 'modelcode ontbreekt'} · ${statusLabel(profile.identificationStatus)}`; info.append(name, meta);
+  const score = document.createElement('span'); score.className = 'confidence-ring'; score.textContent = `${profile.confidenceScore}%`; header.append(info, score);
+  const candidate = document.createElement('div'); candidate.className = 'candidate-box'; candidate.textContent = `Kandidaten: ${profile.candidates.join(', ')}`;
+  const actions = document.createElement('div'); actions.className = 'project-card-actions';
+  [['edit', 'Aanvullen'], ['duplicate', 'Kopiëren'], ['delete', 'Verwijderen']].forEach(([action, label]) => { const button = document.createElement('button'); button.type = 'button'; button.className = `project-action ${action}`; button.dataset.droneAction = action; button.dataset.id = profile.id; button.textContent = label; actions.append(button); });
+  card.append(header, candidate, compatibilityRows(profile), actions); return card;
+}
+
+function renderDroneProfiles() {
+  const profiles = droneProfileStore?.list() || [];
+  droneEmpty.hidden = profiles.length > 0; droneList.hidden = profiles.length === 0;
+  droneList.replaceChildren(...profiles.map(droneCard)); renderActiveProject();
+}
+
+document.querySelector('#newDroneButton').addEventListener('click', () => openDroneForm());
+document.querySelector('#emptyNewDroneButton').addEventListener('click', () => openDroneForm());
+document.querySelector('[data-close-drone]').addEventListener('click', () => droneDialog.close());
+droneForm.addEventListener('input', (event) => { if (event.target.id !== 'dronePhotos') updateIdentificationPreview(); });
+document.querySelector('#dronePhotos').addEventListener('change', async (event) => {
+  droneFormError.textContent = '';
+  try { const available = 3 - currentPhotos.length; const added = await Promise.all([...event.target.files].slice(0, available).map(compressImage)); currentPhotos.push(...added); renderPhotoPreview(); }
+  catch { droneFormError.textContent = 'Een foto kon niet worden verwerkt (DA-PHOTO-003).'; }
+  event.target.value = '';
+});
+
+droneForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+  try {
+    const id = document.querySelector('#droneId').value; const data = droneFormData();
+    const profile = id ? droneProfileStore.update(id, data) : droneProfileStore.create(data);
+    if (projectStore) {
+      projectStore.list().filter((project) => project.droneProfileId === profile.id).forEach((project) => projectStore.linkDroneProfile(project.id, null));
+      const projectId = document.querySelector('#droneProject').value; if (projectId) projectStore.linkDroneProfile(projectId, profile.id);
+    }
+    droneDialog.close(); renderDroneProfiles(); renderProjects();
+  } catch (error) { droneFormError.textContent = error.name === 'QuotaExceededError' ? 'Lokale opslag is vol. Verwijder een bewijsfoto.' : 'Profiel kon niet worden bewaard (DA-DRONE-003).'; }
+});
+
+droneList.addEventListener('click', (event) => {
+  const button = event.target.closest('[data-drone-action]'); if (!button || !droneProfileStore) return;
+  const profile = droneProfileStore.get(button.dataset.id); if (!profile) return;
+  if (button.dataset.droneAction === 'edit') openDroneForm(profile);
+  if (button.dataset.droneAction === 'duplicate') { droneProfileStore.duplicate(profile.id); renderDroneProfiles(); }
+  if (button.dataset.droneAction === 'delete') { deleteDroneId = profile.id; document.querySelector('#deleteDroneMessage').textContent = `“${profile.name}” en de lokale bewijsfoto’s worden verwijderd. Projectkoppelingen worden losgemaakt.`; deleteDroneDialog.showModal(); }
+});
+
+document.querySelector('#confirmDeleteDrone').addEventListener('click', () => {
+  if (deleteDroneId && droneProfileStore) {
+    projectStore?.list().filter((project) => project.droneProfileId === deleteDroneId).forEach((project) => projectStore.linkDroneProfile(project.id, null));
+    droneProfileStore.remove(deleteDroneId);
+  }
+  deleteDroneId = null; renderDroneProfiles(); renderProjects();
 });
 
 window.addEventListener('error', (event) => console.error('DA-APP-001', event.error || event.message));
